@@ -31,7 +31,11 @@ export function bassPitch(
       return lowestAtOrAbove(harmony.pitchClasses[1] as number, root);
     case "fifth":
       return lowestAtOrAbove(harmony.pitchClasses[2] as number, root);
-    case "approach":
-      return bassRoot(nextHarmony, baseMidi) + (approachUp ? -1 : 1);
+    case "approach": {
+      const target = bassRoot(nextHarmony, baseMidi);
+      if (target % SEMITONES_PER_OCTAVE === root % SEMITONES_PER_OCTAVE)
+        return lowestAtOrAbove(harmony.pitchClasses[2] as number, root);
+      return target + (approachUp ? -1 : 1);
+    }
   }
 }

@@ -5,9 +5,19 @@ import { degreeToMidi } from "../../utils/theory/degreeToMidi";
 import { foldIntoRange } from "../../utils/theory/foldIntoRange";
 import type { BarContext } from "./types/BarContext";
 import { stepsToBeats, stepToBeat } from "./stepToBeat";
-import { PLACEMENT_OCTAVES, OCTAVE, SCALE_TONE_BASE, SCALE_DEGREES } from "./constants/composeCounter.constants";
+import {
+  PLACEMENT_OCTAVES,
+  OCTAVE,
+  SCALE_TONE_BASE,
+  SCALE_DEGREES,
+} from "./constants/composeCounter.constants";
+import { avoidPitchClasses } from "../../utils/theory/avoidPitchClasses";
+import { sitsWithMelody } from "./utils/sitsWithMelody.util";
 
-export function composeCounter(context: BarContext): NoteEvent[] {
+export function composeCounter(
+  context: BarContext,
+  melody: readonly NoteEvent[],
+): NoteEvent[] {
   const recipe = context.style.counter;
   if (!recipe || context.energy < recipe.minimumEnergy) return [];
 
@@ -19,6 +29,7 @@ export function composeCounter(context: BarContext): NoteEvent[] {
   const count = rng.int(1, complexity > 0.6 ? 3 : 2);
   const available = [...recipe.steps];
   const energyScale = 0.7 + 0.3 * context.energy;
+  const avoid = avoidPitchClasses(context.harmony.pitchClasses);
   const events: NoteEvent[] = [];
 
   for (let index = 0; index < count && available.length > 0; index++) {
@@ -26,22 +37,32 @@ export function composeCounter(context: BarContext): NoteEvent[] {
       rng.int(0, available.length - 1),
       1,
     )[0] as number;
-    const useScaleTone = rng.chance(complexity * 0.5);
-    const raw = useScaleTone
-      ? degreeToMidi(
-          context.scale,
-          context.settings.keyRoot,
-          rng.int(0, SCALE_DEGREES - 1),
-          SCALE_TONE_BASE,
-        )
-      : (rng.pick(context.harmony.pitchClasses) as number) +
-        OCTAVE * PLACEMENT_OCTAVES;
+    const startBeat = stepToBeat(step, context.swingBeats);
+    const durationBeats = stepsToBeats(rng.pick(recipe.lengthSteps));
+    const scaleTone = degreeToMidi(
+      context.scale,
+      context.settings.keyRoot,
+      rng.int(0, SCALE_DEGREES - 1),
+      SCALE_TONE_BASE,
+    );
+    const useScaleTone =
+      rng.chance(complexity * 0.5) && !avoid.has(scaleTone % OCTAVE);
+    const candidates = [
+      ...(useScaleTone ? [scaleTone] : []),
+      ...rng
+        .shuffle(context.harmony.pitchClasses)
+        .map((pitchClass) => pitchClass + OCTAVE * PLACEMENT_OCTAVES),
+    ].map((raw) => foldIntoRange(raw, recipe.lowMidi, recipe.highMidi));
+    const midi = candidates.find((candidate) =>
+      sitsWithMelody(candidate, startBeat, durationBeats, melody),
+    );
+    if (midi === undefined) continue;
     events.push({
       layer: "counter",
       voice: context.timbre.counterVoice,
-      startBeat: stepToBeat(step, context.swingBeats),
-      durationBeats: stepsToBeats(rng.pick(recipe.lengthSteps)),
-      midi: foldIntoRange(raw, recipe.lowMidi, recipe.highMidi),
+      startBeat,
+      durationBeats,
+      midi,
       velocity: clamp(rng.range(0.3, 0.55) * energyScale, 0.05, 1),
     });
   }

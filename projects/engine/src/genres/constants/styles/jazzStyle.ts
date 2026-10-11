@@ -160,9 +160,9 @@ export const jazzStyle: StyleDefinition = {
   },
   melody: {
     voice: "horn",
-    baseMidi: 70,
-    lowMidi: 58,
-    highMidi: 84,
+    baseMidi: 72,
+    lowMidi: 65,
+    highMidi: 86,
     restChance: 0.3,
     minimumNotes: 5,
     maximumNotes: 9,

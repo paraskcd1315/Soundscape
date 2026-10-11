@@ -10,7 +10,12 @@ import { motifFor } from "./motifFor";
 import { snapToChordTone } from "./snapToChordTone";
 import { stepsToBeats, stepToBeat } from "./stepToBeat";
 import { varyMotif } from "./varyMotif";
-import { PHRASE_END_REST_BOOST } from "./constants/composeMelody.constants";
+import {
+  APPROACH_MAX_BEATS,
+  PHRASE_END_REST_BOOST,
+} from "./constants/composeMelody.constants";
+import { avoidPitchClasses } from "../../utils/theory/avoidPitchClasses";
+import { steerOffAvoidNote } from "./steerOffAvoidNote";
 
 export function composeMelody(context: BarContext): NoteEvent[] {
   const recipe = context.style.melody;
@@ -32,6 +37,7 @@ export function composeMelody(context: BarContext): NoteEvent[] {
   );
   const keepProbability = 0.6 + 0.4 * context.settings.density;
   const energyScale = 0.7 + 0.3 * context.energy;
+  const avoid = avoidPitchClasses(context.harmony.pitchClasses);
   const events: NoteEvent[] = [];
 
   motif.forEach((note, index) => {
@@ -46,7 +52,13 @@ export function composeMelody(context: BarContext): NoteEvent[] {
           recipe.baseMidi,
           context.harmony.pitchClasses,
         )
-      : rawDegree;
+      : steerOffAvoidNote(
+          rawDegree,
+          context.scale,
+          context.settings.keyRoot,
+          recipe.baseMidi,
+          avoid,
+        );
     const midi = foldIntoRange(
       degreeToMidi(
         context.scale,
@@ -71,19 +83,37 @@ export function composeMelody(context: BarContext): NoteEvent[] {
     });
   });
 
-  return withChromaticApproach(events, recipe.chromaticChance ?? 0, rng);
+  return withChromaticApproach(
+    events,
+    recipe.chromaticChance ?? 0,
+    context.harmony.pitchClasses,
+    recipe,
+    rng,
+  );
 }
 
 function withChromaticApproach(
   events: NoteEvent[],
   chance: number,
+  chordPitchClasses: readonly number[],
+  range: { lowMidi: number; highMidi: number },
   rng: SeededRng,
 ): NoteEvent[] {
   if (chance <= 0) return events;
   return events.map((event, index) => {
     const next = events[index + 1];
     if (!next || Number.isInteger(event.startBeat * 2)) return event;
+    if (!chordPitchClasses.includes(next.midi % 12)) return event;
     if (!rng.chance(chance)) return event;
-    return { ...event, midi: next.midi + (next.midi >= event.midi ? -1 : 1) };
+    const preferred = next.midi + (next.midi >= event.midi ? -1 : 1);
+    const midi =
+      preferred < range.lowMidi || preferred > range.highMidi
+        ? 2 * next.midi - preferred
+        : preferred;
+    return {
+      ...event,
+      midi,
+      durationBeats: Math.min(event.durationBeats, APPROACH_MAX_BEATS),
+    };
   });
 }

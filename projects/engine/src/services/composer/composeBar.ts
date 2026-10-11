@@ -54,6 +54,8 @@ export function composeBar(settings: Settings, barIndex: number): NoteEvent[] {
   const on = (layer: LayerKind): boolean =>
     layerActive(settings.seed, form, layer, barIndex);
 
+  const melody = on("melody") ? composeMelody(context) : [];
+
   return [
     ...humanizeEvents(
       [
@@ -61,8 +63,8 @@ export function composeBar(settings: Settings, barIndex: number): NoteEvent[] {
         ...(on("bass") ? composeBass(context) : []),
         ...(on("chords") ? composeChords(context) : []),
         ...(on("pad") ? composePad(context) : []),
-        ...(on("melody") ? composeMelody(context) : []),
-        ...(on("counter") ? composeCounter(context) : []),
+        ...melody,
+        ...(on("counter") ? composeCounter(context, melody) : []),
         ...(on("texture") ? composeTexture(context) : []),
       ],
       context,

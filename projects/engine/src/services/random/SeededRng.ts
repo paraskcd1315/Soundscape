@@ -28,4 +28,13 @@ export class SeededRng {
   pick<T>(items: readonly T[]): T {
     return items[Math.floor(this.next() * items.length)] as T;
   }
+
+  shuffle<T>(items: readonly T[]): T[] {
+    const result = [...items];
+    for (let index = result.length - 1; index > 0; index--) {
+      const swap = Math.floor(this.next() * (index + 1));
+      [result[index], result[swap]] = [result[swap] as T, result[index] as T];
+    }
+    return result;
+  }
 }
