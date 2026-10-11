@@ -2,6 +2,7 @@ import type { Preset } from "../../../models/Preset";
 import { builtin } from "../utils/builtinPreset.util";
 import { TRANCE_PRESETS } from "./clubPresets.constants";
 import { HOUSE_PRESETS } from "./housePresets.constants";
+import { CHILL_PRESETS } from "./chillPresets.constants";
 
 export const BUILTIN_PRESETS: readonly Preset[] = [
   builtin(
@@ -289,4 +290,5 @@ export const BUILTIN_PRESETS: readonly Preset[] = [
   ),
   ...TRANCE_PRESETS,
   ...HOUSE_PRESETS,
+  ...CHILL_PRESETS,
 ];

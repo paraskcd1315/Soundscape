@@ -22,6 +22,12 @@ export const STYLE_NAMES: Readonly<Record<StyleId, string>> = {
   melodicHouseTechno: "Melodic House & Techno",
   deepMelodicTechno: "Deep Melodic Techno",
   dubTechno: "Dub Techno",
+  chillout: "Chillout",
+  lounge: "Lounge",
+  downtempoLounge: "Downtempo Lounge",
+  lofiLounge: "Lo-fi Lounge & Chill",
+  smoothLofi: "Smooth Lo-fi Beats",
+  futureChill: "Future Chill",
 };
 
 export const SCALE_NAMES: Readonly<Record<ScaleId, string>> = {

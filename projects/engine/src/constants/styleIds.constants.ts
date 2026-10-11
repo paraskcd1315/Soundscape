@@ -16,4 +16,10 @@ export const STYLE_IDS = [
   "melodicHouseTechno",
   "deepMelodicTechno",
   "dubTechno",
+  "chillout",
+  "lounge",
+  "downtempoLounge",
+  "lofiLounge",
+  "smoothLofi",
+  "futureChill",
 ] as const;
