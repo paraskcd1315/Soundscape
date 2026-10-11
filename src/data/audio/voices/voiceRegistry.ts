@@ -17,6 +17,15 @@ import { subBassVoice } from "./subBassVoice";
 import { swellVoice } from "./swellVoice";
 import { triangleVoice } from "./triangleVoice";
 import { uprightVoice } from "./uprightVoice";
+import { brushVoice } from "./brushVoice";
+import { kalimbaVoice } from "./kalimbaVoice";
+import { organVoice } from "./organVoice";
+import { rhodesVoice } from "./rhodesVoice";
+import { rimVoice } from "./rimVoice";
+import { shakerVoice } from "./shakerVoice";
+import { softLeadVoice } from "./softLeadVoice";
+import { stringsVoice } from "./stringsVoice";
+import { vibesVoice } from "./vibesVoice";
 import type { VoiceRenderer } from "./VoiceRenderer";
 
 export const VOICES: Record<VoiceId, VoiceRenderer> = {
@@ -38,4 +47,13 @@ export const VOICES: Record<VoiceId, VoiceRenderer> = {
   perc: percVoice,
   swell: swellVoice,
   crackle: crackleVoice,
+  rhodes: rhodesVoice,
+  vibes: vibesVoice,
+  organ: organVoice,
+  strings: stringsVoice,
+  kalimba: kalimbaVoice,
+  softLead: softLeadVoice,
+  shaker: shakerVoice,
+  rim: rimVoice,
+  brush: brushVoice,
 };

@@ -6,7 +6,10 @@ import { STYLES } from "../../styles/styleCatalog";
 import type { BarContext } from "./BarContext";
 import { composeBass } from "./composeBass";
 import { composeChords } from "./composeChords";
+import { composeCounter } from "./composeCounter";
 import { composeDrums } from "./composeDrums";
+import { composePad } from "./composePad";
+import { timbreFor } from "./timbreFor";
 import { composeMelody } from "./composeMelody";
 import { composeTexture } from "./composeTexture";
 import { COMPOSER_METRICS } from "./composerMetrics";
@@ -27,6 +30,7 @@ export function composeBar(settings: Settings, barIndex: number): NoteEvent[] {
     settings,
     style,
     scale,
+    timbre: timbreFor(settings, style),
     barIndex,
     section: Math.floor(barIndex / COMPOSER_METRICS.sectionBars),
     harmony: harmonyAt(settings, style, scale, barIndex),
@@ -43,7 +47,9 @@ export function composeBar(settings: Settings, barIndex: number): NoteEvent[] {
       ...composeDrums(context),
       ...composeBass(context),
       ...composeChords(context),
+      ...composePad(context),
       ...composeMelody(context),
+      ...composeCounter(context),
       ...composeTexture(context),
     ],
     context,

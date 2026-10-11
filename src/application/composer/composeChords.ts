@@ -30,7 +30,7 @@ export function composeChords(context: BarContext): NoteEvent[] {
     harmony.voicing.forEach((midi, index) => {
       events.push({
         layer: "chords",
-        voice: recipe.voice,
+        voice: context.timbre.chordVoice,
         startBeat: index * COMPOSER_METRICS.strumBeats,
         durationBeats: duration,
         midi,
@@ -42,13 +42,14 @@ export function composeChords(context: BarContext): NoteEvent[] {
 
   if (recipe.rhythm === "stab") {
     const keep = 0.65 + 0.35 * context.settings.density;
-    const strum = recipe.voice === "epiano" ? COMPOSER_METRICS.strumBeats : 0;
-    recipe.stabSteps.forEach((step, stabIndex) => {
+    const strum =
+      context.timbre.chordVoice === "stab" ? 0 : COMPOSER_METRICS.strumBeats;
+    context.timbre.stabSteps.forEach((step, stabIndex) => {
       if (stabIndex > 0 && !rng.chance(keep)) return;
       harmony.voicing.forEach((midi, index) => {
         events.push({
           layer: "chords",
-          voice: recipe.voice,
+          voice: context.timbre.chordVoice,
           startBeat: stepToBeat(step, context.swingBeats) + index * strum,
           durationBeats: stepsToBeats(STAB_LENGTH_STEPS),
           midi,
@@ -69,7 +70,7 @@ export function composeChords(context: BarContext): NoteEvent[] {
     ] as number;
     events.push({
       layer: "chords",
-      voice: recipe.voice,
+      voice: context.timbre.chordVoice,
       startBeat: stepToBeat(step, context.swingBeats),
       durationBeats: stepsToBeats(recipe.arpStepLength),
       midi: tone,

@@ -30,7 +30,7 @@ export function composeBass(context: BarContext): NoteEvent[] {
     if (!rng.chance(keepProbability)) continue;
     events.push({
       layer: "bass",
-      voice: recipe.voice,
+      voice: context.timbre.bassVoice,
       startBeat: stepToBeat(step.step, context.swingBeats),
       durationBeats: stepsToBeats(step.lengthSteps),
       midi: bassPitch(

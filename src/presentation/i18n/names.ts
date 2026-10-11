@@ -26,7 +26,9 @@ export const LAYER_NAMES: Record<LayerKind, string> = {
   drums: "Drums",
   bass: "Bass",
   chords: "Chords",
+  pad: "Pad",
   melody: "Melody",
+  counter: "Counter",
   texture: "Texture",
 };
 

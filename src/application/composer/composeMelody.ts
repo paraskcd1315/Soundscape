@@ -59,7 +59,7 @@ export function composeMelody(context: BarContext): NoteEvent[] {
     );
     events.push({
       layer: "melody",
-      voice: recipe.voice,
+      voice: context.timbre.melodyVoice,
       startBeat: stepToBeat(note.step, context.swingBeats),
       durationBeats: stepsToBeats(note.lengthSteps),
       midi,

@@ -16,6 +16,31 @@ export const lofiStyle: StyleDefinition = {
     {
       barsPerChord: 1,
       chords: [
+        { degree: 5, size: 4 },
+        { degree: 3, size: 5 },
+        { degree: 0, size: 4 },
+        { degree: 4, size: 4 },
+      ],
+    },
+    {
+      barsPerChord: 2,
+      chords: [
+        { degree: 0, size: 5 },
+        { degree: 3, size: 5 },
+      ],
+    },
+    {
+      barsPerChord: 1,
+      chords: [
+        { degree: 3, size: 5 },
+        { degree: 2, size: 4 },
+        { degree: 1, size: 4 },
+        { degree: 4, size: 4 },
+      ],
+    },
+    {
+      barsPerChord: 1,
+      chords: [
         { degree: 0, size: 5 },
         { degree: 3, size: 4 },
         { degree: 5, size: 4 },
@@ -101,6 +126,120 @@ export const lofiStyle: StyleDefinition = {
     minimumEnergy: 0.25,
   },
   texture: { kind: "crackle", voice: "crackle", baseMidi: 0, chance: 0.8 },
+  pad: { voice: "strings", size: 4, velocity: 0.42, minimumEnergy: 0.2 },
+  counter: {
+    voice: "kalimba",
+    lowMidi: 67,
+    highMidi: 90,
+    chance: 0.6,
+    steps: [2, 6, 10, 14, 3, 11],
+    lengthSteps: [2, 3, 4],
+    minimumEnergy: 0.3,
+  },
+  variants: {
+    chordVoices: ["epiano", "rhodes", "vibes", "strings"],
+    melodyVoices: ["epiano", "vibes", "kalimba", "softLead", "rhodes"],
+    bassVoices: ["subBass", "upright"],
+    padVoices: ["strings", "pad", "organ"],
+    counterVoices: ["kalimba", "vibes", "bell"],
+    stabSteps: [
+      [0, 7, 10],
+      [0, 6, 11],
+      [3, 10],
+      [0, 4, 8, 12],
+      [2, 7, 14],
+      [0, 10],
+      [1, 6, 9, 14],
+    ],
+    chordCenterShifts: [-4, -2, 0, 2, 4],
+    drumKits: [
+      [
+        {
+          voice: "kick",
+          steps: [1, 0, 0, 0, 0, 0, 0, 0.3, 0, 0.5, 1, 0, 0, 0, 0, 0.2],
+        },
+        {
+          voice: "snare",
+          steps: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0.15, 1, 0, 0, 0.2],
+        },
+        {
+          voice: "hat",
+          steps: [
+            0.9, 0, 0.8, 0, 0.9, 0, 0.8, 0.3, 0.9, 0, 0.8, 0, 0.9, 0, 0.8, 0.3,
+          ],
+        },
+      ],
+      [
+        {
+          voice: "kick",
+          steps: [1, 0, 0, 0, 0, 0, 0.4, 0, 0, 0, 1, 0, 0, 0.3, 0, 0],
+        },
+        {
+          voice: "snare",
+          steps: [0, 0, 0, 0, 1, 0, 0, 0.2, 0, 0, 0, 0, 1, 0, 0.2, 0],
+        },
+        {
+          voice: "hat",
+          steps: [
+            0.8, 0, 0.8, 0.5, 0.8, 0, 0.8, 0.5, 0.8, 0, 0.8, 0.5, 0.8, 0, 0.8,
+            0.5,
+          ],
+        },
+        {
+          voice: "shaker",
+          steps: [
+            0.6, 0.5, 0.6, 0.5, 0.6, 0.5, 0.6, 0.5, 0.6, 0.5, 0.6, 0.5, 0.6,
+            0.5, 0.6, 0.5,
+          ],
+        },
+      ],
+      [
+        {
+          voice: "kick",
+          steps: [1, 0, 0, 0.3, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0.5, 0],
+        },
+        {
+          voice: "snare",
+          steps: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+        },
+        {
+          voice: "rim",
+          steps: [0, 0, 0.3, 0, 0, 0, 0.4, 0, 0, 0.3, 0, 0, 0, 0.4, 0, 0.3],
+        },
+        {
+          voice: "hat",
+          steps: [1, 0, 0, 0.5, 1, 0, 0, 0.5, 1, 0, 0, 0.5, 1, 0, 0, 0.5],
+        },
+      ],
+      [
+        {
+          voice: "kick",
+          steps: [1, 0, 0, 0, 0, 0, 0, 0.4, 0, 0, 1, 0, 0, 0, 0, 0.4],
+        },
+        {
+          voice: "snare",
+          steps: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0.3],
+        },
+        {
+          voice: "hat",
+          steps: [
+            0.9, 0, 0.9, 0, 0.9, 0, 0.9, 0, 0.9, 0, 0.9, 0, 0.9, 0, 0.9, 0,
+          ],
+        },
+        {
+          voice: "openHat",
+          steps: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0, 0, 0, 0],
+        },
+        {
+          voice: "shaker",
+          steps: [
+            0.4, 0.3, 0.4, 0.3, 0.4, 0.3, 0.4, 0.3, 0.4, 0.3, 0.4, 0.3, 0.4,
+            0.3, 0.4, 0.3,
+          ],
+        },
+      ],
+    ],
+  },
   palette: {
     backgroundTop: "#1b0f12",
     backgroundBottom: "#4a2230",
@@ -110,6 +249,8 @@ export const lofiStyle: StyleDefinition = {
       chords: "#f4a6a0",
       melody: "#ffd7a8",
       texture: "#fff1de",
+      pad: "#9c5a6e",
+      counter: "#ffcf9a",
     },
   },
 };

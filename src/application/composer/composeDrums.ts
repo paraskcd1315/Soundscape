@@ -21,7 +21,7 @@ export function composeDrums(context: BarContext): NoteEvent[] {
     rng.chance(recipe.fillChance * (0.5 + context.energy));
   const events: NoteEvent[] = [];
 
-  for (const grid of recipe.grids) {
+  for (const grid of context.timbre.drumKit) {
     grid.steps.forEach((probability, step) => {
       if (probability <= 0) return;
       if (withFill && step >= COMPOSER_METRICS.fillStartStep) return;

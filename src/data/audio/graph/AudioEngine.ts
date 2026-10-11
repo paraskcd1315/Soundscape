@@ -65,13 +65,16 @@ export class AudioEngine implements NoteSink {
       const layerGain = context.createGain();
       const send = context.createGain();
       send.gain.value = AUDIO_METRICS.layerReverbSend[kind];
-      layerGain.connect(send).connect(convolver);
+      const panner = context.createStereoPanner();
+      panner.pan.value = AUDIO_METRICS.layerPan[kind];
+      layerGain.connect(panner);
+      panner.connect(send).connect(convolver);
       if ((AUDIO_METRICS.duckedLayers as readonly LayerKind[]).includes(kind)) {
         const duck = context.createGain();
-        layerGain.connect(duck).connect(this.toneFilter);
+        panner.connect(duck).connect(this.toneFilter);
         this.duckGains.push(duck);
       } else {
-        layerGain.connect(this.toneFilter);
+        panner.connect(this.toneFilter);
       }
       this.layerGains[kind] = layerGain;
     }

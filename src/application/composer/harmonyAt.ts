@@ -8,6 +8,7 @@ import { chordPitchClasses } from "../../domain/theory/chordTones";
 import { rootPositionVoicing, voiceLead } from "../../domain/theory/voiceLead";
 import type { BarHarmony } from "./BarHarmony";
 import { COMPOSER_METRICS } from "./composerMetrics";
+import { timbreFor } from "./timbreFor";
 
 function progressionForSection(
   settings: Settings,
@@ -66,7 +67,11 @@ export function harmonyAt(
     pitchClasses = chordPitchClasses(chord, scale, settings.keyRoot);
     voicing =
       counter === 0
-        ? rootPositionVoicing(pitchClasses, style.chords.centerMidi)
+        ? rootPositionVoicing(
+            pitchClasses,
+            style.chords.centerMidi +
+              timbreFor(settings, style).chordCenterShift,
+          )
         : voiceLead(voicing, pitchClasses);
   }
 

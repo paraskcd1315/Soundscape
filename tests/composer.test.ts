@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { composeBar } from "../src/application/composer/composeBar";
+import { timbreFor } from "../src/application/composer/timbreFor";
 import { defaultSettingsFor } from "../src/application/settings/defaultSettingsFor";
 import { LAYER_KINDS } from "../src/domain/model/LayerKind";
 import { STYLE_IDS } from "../src/domain/model/StyleId";
@@ -63,7 +64,26 @@ describe.each(STYLE_IDS)("composer %s", (styleId) => {
     const used = new Set(
       bars(styleId, 5).flatMap((events) => events.map((event) => event.layer)),
     );
-    expect(used.size).toBeGreaterThanOrEqual(LAYER_KINDS.length - 2);
+    expect(used.size).toBeGreaterThanOrEqual(LAYER_KINDS.length - 3);
+  });
+
+  it("gives different seeds different timbres", () => {
+    const style = STYLES[styleId];
+    const signatures = new Set<string>();
+    for (let seed = 1; seed <= 40; seed++) {
+      const timbre = timbreFor(defaultSettingsFor(styleId, seed), style);
+      signatures.add(
+        [
+          timbre.chordVoice,
+          timbre.melodyVoice,
+          timbre.bassVoice,
+          timbre.drumKit.length,
+          timbre.stabSteps.join("."),
+        ].join("|"),
+      );
+    }
+    const minimum = styleId === "lofi" || styleId === "jazz" ? 15 : 1;
+    expect(signatures.size).toBeGreaterThanOrEqual(minimum);
   });
 
   it("keeps drums and bass independent of complexity", () => {
