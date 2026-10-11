@@ -1,3 +1,5 @@
+@use '../../foundation/mixins/breakpoints';
+
 .ss-slider {
   $self: &;
   display: grid;
@@ -73,6 +75,22 @@
       outline: 2px solid var(--ss-accent);
       outline-offset: 4px;
       border-radius: var(--ss-radius-pill);
+    }
+
+    @include breakpoints.coarse-pointer {
+      height: var(--ss-control-height);
+      touch-action: pan-y;
+
+      &::-webkit-slider-thumb {
+        width: 28px;
+        height: 28px;
+        margin-top: -11px;
+      }
+
+      &::-moz-range-thumb {
+        width: 28px;
+        height: 28px;
+      }
     }
   }
 

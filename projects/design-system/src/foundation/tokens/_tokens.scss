@@ -62,6 +62,8 @@
 
   --ss-control-height: 44px;
   --ss-control-height-sm: 36px;
+  --ss-touch-input-font-size: 16px;
+  --ss-sheet-max-width: 640px;
   --ss-safe-top: env(safe-area-inset-top, 0px);
   --ss-safe-bottom: env(safe-area-inset-bottom, 0px);
   --ss-safe-right: env(safe-area-inset-right, 0px);
@@ -71,6 +73,12 @@
   --ss-z-chrome: 50;
   --ss-z-drawer: 100;
   --ss-z-toast: 200;
+}
+
+@media (pointer: coarse) {
+  :root {
+    --ss-control-height-sm: var(--ss-control-height);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

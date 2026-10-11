@@ -82,7 +82,8 @@
       left: 0;
       right: 0;
       bottom: 0;
-      width: 100%;
+      width: min(100%, var(--ss-sheet-max-width));
+      margin-inline: auto;
       max-height: 86dvh;
       border-radius: var(--ss-radius-xl) var(--ss-radius-xl) 0 0;
       border-bottom: 0;

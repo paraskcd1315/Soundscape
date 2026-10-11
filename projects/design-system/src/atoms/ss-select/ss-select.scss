@@ -1,4 +1,5 @@
 @use '../../foundation/mixins/glass';
+@use '../../foundation/mixins/breakpoints';
 
 .ss-select {
   display: flex;
@@ -28,6 +29,10 @@
 
     option {
       background: var(--ss-surface-container);
+    }
+
+    @include breakpoints.coarse-pointer {
+      font-size: var(--ss-touch-input-font-size);
     }
   }
 }

@@ -1,4 +1,5 @@
 @use '../../foundation/mixins/glass';
+@use '../../foundation/mixins/breakpoints';
 
 .ss-chip {
   display: inline-flex;
@@ -17,8 +18,10 @@
   @include glass.pressable;
   @include glass.focus-ring;
 
-  &:hover {
-    color: var(--ss-text-primary);
+  @include breakpoints.can-hover {
+    &:hover {
+      color: var(--ss-text-primary);
+    }
   }
 
   &[aria-pressed='true'] {

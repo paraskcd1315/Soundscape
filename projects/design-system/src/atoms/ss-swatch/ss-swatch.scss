@@ -1,4 +1,5 @@
 @use '../../foundation/mixins/glass';
+@use '../../foundation/mixins/breakpoints';
 
 .ss-swatch {
   width: 40px;
@@ -14,5 +15,10 @@
   &[aria-pressed='true'] {
     border-color: #fff;
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--ss-accent) 45%, transparent);
+  }
+
+  @include breakpoints.coarse-pointer {
+    width: var(--ss-control-height);
+    height: var(--ss-control-height);
   }
 }

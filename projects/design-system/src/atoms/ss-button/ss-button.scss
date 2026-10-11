@@ -1,4 +1,5 @@
 @use '../../foundation/mixins/glass';
+@use '../../foundation/mixins/breakpoints';
 
 .ss-button {
   $self: &;
@@ -34,8 +35,10 @@
     color: var(--ss-accent-contrast);
     box-shadow: 0 6px 18px color-mix(in srgb, var(--ss-accent) 40%, transparent);
 
-    &:hover:not(:disabled) {
-      background: color-mix(in srgb, var(--ss-accent) 85%, white);
+    @include breakpoints.can-hover {
+      &:hover:not(:disabled) {
+        background: color-mix(in srgb, var(--ss-accent) 85%, white);
+      }
     }
   }
 
@@ -45,8 +48,10 @@
     backdrop-filter: var(--ss-blur-soft);
     -webkit-backdrop-filter: var(--ss-blur-soft);
 
-    &:hover:not(:disabled) {
-      border-color: var(--ss-border-strong);
+    @include breakpoints.can-hover {
+      &:hover:not(:disabled) {
+        border-color: var(--ss-border-strong);
+      }
     }
   }
 
@@ -54,8 +59,10 @@
     background: transparent;
     color: var(--ss-accent);
 
-    &:hover:not(:disabled) {
-      background: color-mix(in srgb, var(--ss-accent) 16%, transparent);
+    @include breakpoints.can-hover {
+      &:hover:not(:disabled) {
+        background: color-mix(in srgb, var(--ss-accent) 16%, transparent);
+      }
     }
   }
 
