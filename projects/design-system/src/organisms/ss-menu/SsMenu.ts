@@ -1,19 +1,28 @@
 import "./ss-menu.scss";
+import { COMPACT_MEDIA_QUERY } from "../../foundation/constants/breakpoints.constants";
 import { createElement } from "../../foundation/utils/createElement.util";
 import type { SsMenuOptions } from "./types/SsMenuOptions";
 import { menuPosition } from "./utils/menuPosition.util";
 
 export class SsMenu {
   readonly element: HTMLDivElement;
+  private readonly scrim: HTMLDivElement;
   private readonly items = new Map<string, HTMLButtonElement>();
   private anchor: HTMLElement | null = null;
   private readonly dismiss = (event: PointerEvent): void => {
     const target = event.target as Node;
-    if (!this.element.contains(target) && !this.anchor?.contains(target))
+    if (
+      !this.element.contains(target) &&
+      !this.anchor?.contains(target) &&
+      target !== this.scrim
+    )
       this.close();
   };
+  private readonly closeOnResize = (): void => this.close();
 
   constructor(options: SsMenuOptions) {
+    this.scrim = createElement("div", "ss-menu__scrim");
+    this.scrim.addEventListener("click", () => this.close());
     const list = createElement("div", "ss-menu__list", {
       role: "menu",
       "aria-label": options.label,
@@ -72,17 +81,16 @@ export class SsMenu {
 
   open(anchor: HTMLElement): void {
     this.anchor = anchor;
+    const sheet = window.matchMedia(COMPACT_MEDIA_QUERY).matches;
+    if (!this.scrim.isConnected) this.element.before(this.scrim);
+    this.element.classList.toggle("ss-menu--sheet", sheet);
+    this.scrim.classList.toggle("ss-menu__scrim--visible", sheet);
     this.element.classList.add("ss-menu--open");
     this.element.setAttribute("aria-hidden", "false");
-    const position = menuPosition(
-      anchor.getBoundingClientRect(),
-      this.element.getBoundingClientRect(),
-      window.innerWidth,
-      window.innerHeight,
-    );
-    this.element.style.left = `${position.left}px`;
-    this.element.style.top = `${position.top}px`;
+    if (sheet) this.placeAsSheet();
+    else this.placeBeside(anchor);
     document.addEventListener("pointerdown", this.dismiss);
+    window.addEventListener("resize", this.closeOnResize);
     this.element
       .querySelector<HTMLButtonElement>('[aria-checked="true"]')
       ?.focus();
@@ -91,7 +99,25 @@ export class SsMenu {
   close(): void {
     this.element.classList.remove("ss-menu--open");
     this.element.setAttribute("aria-hidden", "true");
+    this.scrim.classList.remove("ss-menu__scrim--visible");
     document.removeEventListener("pointerdown", this.dismiss);
+    window.removeEventListener("resize", this.closeOnResize);
     this.anchor?.focus();
+  }
+
+  private placeAsSheet(): void {
+    this.element.style.left = "";
+    this.element.style.top = "";
+  }
+
+  private placeBeside(anchor: HTMLElement): void {
+    const position = menuPosition(
+      anchor.getBoundingClientRect(),
+      this.element.getBoundingClientRect(),
+      window.innerWidth,
+      window.innerHeight,
+    );
+    this.element.style.left = `${position.left}px`;
+    this.element.style.top = `${position.top}px`;
   }
 }

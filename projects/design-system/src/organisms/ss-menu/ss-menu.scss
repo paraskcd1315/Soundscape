@@ -1,4 +1,7 @@
 @use '../../foundation/mixins/glass';
+@use '../../foundation/mixins/breakpoints';
+
+$ss-menu-sheet-max-width: 640px;
 
 .ss-menu {
   position: fixed;
@@ -18,11 +21,49 @@
     visibility 0s linear var(--ss-dur-fast);
   @include glass.glass-strong;
 
+  &--sheet {
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: min(100%, $ss-menu-sheet-max-width);
+    margin-inline: auto;
+    max-height: 72dvh;
+    padding-bottom: calc(var(--ss-safe-bottom) + var(--ss-space-2));
+    border-bottom: 0;
+    border-radius: var(--ss-radius-xl) var(--ss-radius-xl) 0 0;
+    opacity: 1;
+    transform: translateY(100%);
+    transition:
+      transform var(--ss-dur-sheet) var(--ss-ease),
+      visibility 0s linear var(--ss-dur-sheet);
+  }
+
   &--open {
     visibility: visible;
     opacity: 1;
     transform: none;
     transition-delay: 0s;
+  }
+
+  &__scrim {
+    position: fixed;
+    inset: 0;
+    z-index: var(--ss-z-drawer);
+    background: var(--ss-scrim);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    visibility: hidden;
+    opacity: 0;
+    transition:
+      opacity var(--ss-dur-sheet) var(--ss-ease),
+      visibility 0s linear var(--ss-dur-sheet);
+
+    &--visible {
+      visibility: visible;
+      opacity: 1;
+      transition-delay: 0s;
+    }
   }
 
   &__list {
@@ -43,7 +84,8 @@
   &__item {
     display: flex;
     align-items: center;
-    height: 40px;
+    flex: none;
+    height: var(--ss-control-height);
     padding: 0 var(--ss-space-4);
     border: 0;
     border-radius: var(--ss-radius-md);
@@ -53,8 +95,10 @@
     cursor: pointer;
     @include glass.focus-ring;
 
-    &:hover {
-      background: var(--ss-glass-bg);
+    @include breakpoints.can-hover {
+      &:hover {
+        background: var(--ss-glass-bg);
+      }
     }
 
     &[aria-checked='true'] {
