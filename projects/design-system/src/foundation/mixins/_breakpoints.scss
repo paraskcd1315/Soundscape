@@ -1,8 +1,21 @@
 $ss-breakpoint-compact: 640px;
+$ss-breakpoint-compact-height: 500px;
 $ss-breakpoint-medium: 900px;
 
 @mixin compact {
-  @media (max-width: $ss-breakpoint-compact) {
+  @media (max-width: $ss-breakpoint-compact), (max-height: $ss-breakpoint-compact-height) {
+    @content;
+  }
+}
+
+@mixin can-hover {
+  @media (hover: hover) {
+    @content;
+  }
+}
+
+@mixin coarse-pointer {
+  @media (pointer: coarse) {
     @content;
   }
 }
