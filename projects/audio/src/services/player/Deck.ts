@@ -93,6 +93,40 @@ export class Deck {
     );
   }
 
+  fadeOut(): number {
+    const now = this.context.currentTime;
+    const end = now + this.softFadeSeconds();
+    this.rampFader(0, now, end);
+    return end;
+  }
+
+  halt(): void {
+    this.transport.pause();
+  }
+
+  fadeIn(): void {
+    const now = this.context.currentTime;
+    this.transport.resume();
+    this.rampFader(1, now, now + this.softFadeSeconds());
+  }
+
+  private softFadeSeconds(): number {
+    return Math.min(
+      Math.max(
+        barSeconds(this.settings().tempo),
+        TRANSITION_METRICS.softFadeMinSeconds,
+      ),
+      TRANSITION_METRICS.softFadeMaxSeconds,
+    );
+  }
+
+  private rampFader(target: number, from: number, to: number): void {
+    const gain = this.fader.gain;
+    gain.cancelScheduledValues(from);
+    gain.setValueAtTime(gain.value, from);
+    gain.linearRampToValueAtTime(target, to);
+  }
+
   dispose(): void {
     if (this.disposed) return;
     this.disposed = true;

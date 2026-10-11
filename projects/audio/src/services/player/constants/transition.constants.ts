@@ -6,6 +6,8 @@ export const TRANSITION_METRICS = {
   fadeOutBars: 2,
   earlyExitBars: 1,
   tailSeconds: 3,
+  softFadeMinSeconds: 1.2,
+  softFadeMaxSeconds: 3,
   disposeSeconds: 0.05,
   beatsPerBar: 4,
   secondsPerMinute: 60,

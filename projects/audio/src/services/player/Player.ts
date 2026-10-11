@@ -15,6 +15,7 @@ export class Player {
   private bus: GainNode | null = null;
   private analyserNode: AnalyserNode | null = null;
   private active: Deck | null = null;
+  private paused: Deck | null = null;
   private readonly leaving = new Set<Deck>();
   private suspendTimer = 0;
 
@@ -39,6 +40,12 @@ export class Player {
     window.clearTimeout(this.suspendTimer);
     await context.resume();
     if (this.active) return;
+    if (this.paused) {
+      this.active = this.paused;
+      this.paused = null;
+      this.active.fadeIn();
+      return;
+    }
     this.active = this.createDeck();
     this.active.introAt();
   }
@@ -47,18 +54,27 @@ export class Player {
     const deck = this.active;
     if (!deck || !this.context) return;
     this.active = null;
-    const end = this.retire(deck);
+    this.paused = deck;
+    const end = deck.fadeOut();
     const context = this.context;
     window.clearTimeout(this.suspendTimer);
     this.suspendTimer = window.setTimeout(
       () => {
-        if (!this.active) void context.suspend();
+        if (this.active) return;
+        deck.halt();
+        void context.suspend();
       },
       (end - context.currentTime) * MILLISECONDS_PER_SECOND,
     );
   }
 
   private onSettings(next: Settings, previous: Settings): void {
+    if (this.paused && isIdentityChange(previous, next)) {
+      this.paused.dispose();
+      this.paused = null;
+      return;
+    }
+    this.paused?.applySettings(next);
     const deck = this.active;
     if (!deck) return;
     if (!isIdentityChange(previous, next)) {
