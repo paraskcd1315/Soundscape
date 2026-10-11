@@ -1,5 +1,7 @@
 import type { StyleDefinition } from "../domain/model/StyleDefinition";
+import { jazzForm } from "./forms/jazzForm";
 import { jazzPatterns } from "./patterns/jazzPatterns";
+import { jazzSpace } from "./space/spaces";
 
 export const jazzStyle: StyleDefinition = {
   id: "jazz",
@@ -14,6 +16,42 @@ export const jazzStyle: StyleDefinition = {
   scaleIds: ["dorian", "mixolydian", "major", "minor"],
   defaultScaleId: "dorian",
   progressions: [
+    {
+      barsPerChord: 1,
+      chords: [
+        { degree: 2, size: 4 },
+        { degree: 5, size: 4 },
+        { degree: 1, size: 4 },
+        { degree: 4, size: 4 },
+      ],
+    },
+    {
+      barsPerChord: 1,
+      chords: [
+        { degree: 0, size: 4 },
+        { degree: 5, size: 4 },
+        { degree: 1, size: 4 },
+        { degree: 4, size: 4 },
+      ],
+    },
+    {
+      barsPerChord: 2,
+      chords: [
+        { degree: 1, size: 4 },
+        { degree: 4, size: 5 },
+        { degree: 0, size: 5 },
+        { degree: 3, size: 4 },
+      ],
+    },
+    {
+      barsPerChord: 1,
+      chords: [
+        { degree: 0, size: 5 },
+        { degree: 2, size: 4 },
+        { degree: 5, size: 4 },
+        { degree: 1, size: 4 },
+      ],
+    },
     {
       barsPerChord: 1,
       chords: [
@@ -238,6 +276,8 @@ export const jazzStyle: StyleDefinition = {
     ],
   },
   patterns: jazzPatterns,
+  form: jazzForm,
+  space: jazzSpace,
   palette: {
     backgroundTop: "#1a1004",
     backgroundBottom: "#4a1220",

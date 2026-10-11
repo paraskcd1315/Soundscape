@@ -1,7 +1,7 @@
 import type { Settings } from "../../domain/model/Settings";
-import { STYLE_IDS } from "../../domain/model/StyleId";
 import { STYLES } from "../../styles/styleCatalog";
 import { defaultSettingsFor } from "./defaultSettingsFor";
+import { nextSurpriseStyle } from "./nextSurpriseStyle";
 import { sanitizeSettings } from "./sanitizeSettings";
 
 function between(low: number, high: number): number {
@@ -20,7 +20,7 @@ export function surpriseSettings(
   current: Settings,
   keepSeed: boolean,
 ): Settings {
-  const styleId = pick(STYLE_IDS);
+  const styleId = nextSurpriseStyle(current.styleId);
   const style = STYLES[styleId];
   const base = defaultSettingsFor(
     styleId,

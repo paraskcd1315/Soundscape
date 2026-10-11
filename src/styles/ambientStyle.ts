@@ -1,5 +1,7 @@
 import type { StyleDefinition } from "../domain/model/StyleDefinition";
+import { ambientForm } from "./forms/ambientForm";
 import { ambientPatterns } from "./patterns/ambientPatterns";
+import { ambientSpace } from "./space/spaces";
 
 export const ambientStyle: StyleDefinition = {
   id: "ambient",
@@ -14,6 +16,31 @@ export const ambientStyle: StyleDefinition = {
   scaleIds: ["dorian", "lydian", "majorPentatonic", "minor"],
   defaultScaleId: "dorian",
   progressions: [
+    {
+      barsPerChord: 4,
+      chords: [
+        { degree: 0, size: 5 },
+        { degree: 3, size: 4 },
+      ],
+    },
+    {
+      barsPerChord: 2,
+      chords: [
+        { degree: 5, size: 4 },
+        { degree: 3, size: 5 },
+        { degree: 0, size: 5 },
+        { degree: 4, size: 4 },
+      ],
+    },
+    {
+      barsPerChord: 2,
+      chords: [
+        { degree: 0, size: 4 },
+        { degree: 6, size: 4 },
+        { degree: 5, size: 4 },
+        { degree: 4, size: 5 },
+      ],
+    },
     {
       barsPerChord: 2,
       chords: [
@@ -81,16 +108,18 @@ export const ambientStyle: StyleDefinition = {
     minimumEnergy: 0.2,
   },
   variants: {
-    chordVoices: ["pad", "strings", "organ"],
+    chordVoices: ["pad", "strings", "organ", "choir"],
     melodyVoices: ["bell", "vibes", "kalimba"],
     bassVoices: ["subBass"],
-    padVoices: ["strings", "pad"],
+    padVoices: ["strings", "pad", "choir"],
     counterVoices: ["kalimba", "bell"],
     stabSteps: [[0]],
     chordCenterShifts: [-3, 0, 3],
     drumKits: [],
   },
   patterns: ambientPatterns,
+  form: ambientForm,
+  space: ambientSpace,
   palette: {
     backgroundTop: "#04101f",
     backgroundBottom: "#0b3a46",

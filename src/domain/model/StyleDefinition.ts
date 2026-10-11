@@ -10,6 +10,8 @@ import type { StyleId } from "./StyleId";
 import type { StylePalette } from "./StylePalette";
 import type { CounterRecipe } from "./CounterRecipe";
 import type { PadRecipe } from "./PadRecipe";
+import type { SongForm } from "./SongForm";
+import type { SpaceRecipe } from "./SpaceRecipe";
 import type { StyleVariants } from "./StyleVariants";
 import type { TextureRecipe } from "./TextureRecipe";
 
@@ -35,5 +37,7 @@ export interface StyleDefinition {
   texture: TextureRecipe;
   variants: StyleVariants;
   patterns: PatternRules;
+  form: SongForm;
+  space: SpaceRecipe;
   palette: StylePalette;
 }

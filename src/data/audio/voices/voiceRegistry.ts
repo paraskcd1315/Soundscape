@@ -17,7 +17,9 @@ import { subBassVoice } from "./subBassVoice";
 import { swellVoice } from "./swellVoice";
 import { triangleVoice } from "./triangleVoice";
 import { uprightVoice } from "./uprightVoice";
+import { acidVoice } from "./acidVoice";
 import { brushVoice } from "./brushVoice";
+import { choirVoice } from "./choirVoice";
 import { kalimbaVoice } from "./kalimbaVoice";
 import { organVoice } from "./organVoice";
 import { rhodesVoice } from "./rhodesVoice";
@@ -56,4 +58,6 @@ export const VOICES: Record<VoiceId, VoiceRenderer> = {
   shaker: shakerVoice,
   rim: rimVoice,
   brush: brushVoice,
+  acid: acidVoice,
+  choir: choirVoice,
 };

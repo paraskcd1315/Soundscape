@@ -3,7 +3,11 @@ import type { Settings } from "../../domain/model/Settings";
 import { clamp } from "../../domain/theory/clamp";
 import { SCALES } from "../../domain/theory/scales";
 import { STYLES } from "../../styles/styleCatalog";
+import type { LayerKind } from "../../domain/model/LayerKind";
 import type { BarContext } from "./BarContext";
+import { composeAccents } from "./composeAccents";
+import { formAt } from "./formAt";
+import { layerActive } from "./layerActive";
 import { composeBass } from "./composeBass";
 import { composeChords } from "./composeChords";
 import { composeCounter } from "./composeCounter";
@@ -28,6 +32,7 @@ export function composeBar(settings: Settings, barIndex: number): NoteEvent[] {
   );
 
   const timbre = timbreFor(settings, style);
+  const form = formAt(style.form, barIndex);
   const context: BarContext = {
     settings,
     style,
@@ -38,22 +43,27 @@ export function composeBar(settings: Settings, barIndex: number): NoteEvent[] {
     section: Math.floor(barIndex / COMPOSER_METRICS.sectionBars),
     harmony: harmonyAt(settings, style, scale, barIndex),
     nextHarmony: harmonyAt(settings, style, scale, barIndex + 1),
-    energy: energyAt(settings, barIndex),
+    form,
+    energy: clamp(energyAt(settings, barIndex) + form.plan.energyShift, 0, 1),
     swingBeats: swing * COMPOSER_METRICS.swingMaxBeats,
     isTransitionBar:
+      form.isLastBar ||
       barIndex % COMPOSER_METRICS.phraseBars ===
-      COMPOSER_METRICS.phraseBars - 1,
+        COMPOSER_METRICS.phraseBars - 1,
   };
+  const on = (layer: LayerKind): boolean =>
+    layerActive(settings.seed, form, layer, barIndex);
 
   return humanizeEvents(
     [
-      ...composeDrums(context),
-      ...composeBass(context),
-      ...composeChords(context),
-      ...composePad(context),
-      ...composeMelody(context),
-      ...composeCounter(context),
-      ...composeTexture(context),
+      ...(on("drums") ? composeDrums(context) : []),
+      ...(on("bass") ? composeBass(context) : []),
+      ...(on("chords") ? composeChords(context) : []),
+      ...(on("pad") ? composePad(context) : []),
+      ...(on("melody") ? composeMelody(context) : []),
+      ...(on("counter") ? composeCounter(context) : []),
+      ...(on("texture") ? composeTexture(context) : []),
+      ...composeAccents(context),
     ],
     context,
   );

@@ -56,8 +56,15 @@ describe.each(STYLE_IDS)("composer %s", (styleId) => {
   });
 
   it("plays something on every bar", () => {
-    for (const events of bars(styleId, 5))
-      expect(events.length).toBeGreaterThan(0);
+    let soundingUntil = 0;
+    bars(styleId, 5).forEach((events, bar) => {
+      for (const event of events)
+        soundingUntil = Math.max(
+          soundingUntil,
+          bar * 4 + event.startBeat + event.durationBeats,
+        );
+      expect(events.length > 0 || soundingUntil > bar * 4).toBe(true);
+    });
   });
 
   it("uses most layers over a song", () => {

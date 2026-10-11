@@ -1,5 +1,7 @@
 import type { StyleDefinition } from "../domain/model/StyleDefinition";
+import { lofiForm } from "./forms/lofiForm";
 import { lofiPatterns } from "./patterns/lofiPatterns";
+import { lofiSpace } from "./space/spaces";
 
 export const lofiStyle: StyleDefinition = {
   id: "lofi",
@@ -141,7 +143,7 @@ export const lofiStyle: StyleDefinition = {
     chordVoices: ["epiano", "rhodes", "vibes", "strings"],
     melodyVoices: ["epiano", "vibes", "kalimba", "softLead", "rhodes"],
     bassVoices: ["subBass", "upright"],
-    padVoices: ["strings", "pad", "organ"],
+    padVoices: ["strings", "pad", "organ", "choir"],
     counterVoices: ["kalimba", "vibes", "bell"],
     stabSteps: [
       [0, 7, 10],
@@ -242,6 +244,8 @@ export const lofiStyle: StyleDefinition = {
     ],
   },
   patterns: lofiPatterns,
+  form: lofiForm,
+  space: lofiSpace,
   palette: {
     backgroundTop: "#1b0f12",
     backgroundBottom: "#4a2230",

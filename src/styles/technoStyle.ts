@@ -1,6 +1,8 @@
 import type { BassStep } from "../domain/model/BassStep";
 import type { StyleDefinition } from "../domain/model/StyleDefinition";
+import { technoForm } from "./forms/technoForm";
 import { technoPatterns } from "./patterns/technoPatterns";
+import { technoSpace } from "./space/spaces";
 
 const OFFBEAT_PATTERN: BassStep[] = [2, 6, 10, 14].map((step) => ({
   step,
@@ -31,6 +33,31 @@ export const technoStyle: StyleDefinition = {
   scaleIds: ["minor", "phrygian", "minorPentatonic"],
   defaultScaleId: "minor",
   progressions: [
+    {
+      barsPerChord: 2,
+      chords: [
+        { degree: 0, size: 3 },
+        { degree: 5, size: 3 },
+        { degree: 2, size: 3 },
+        { degree: 6, size: 3 },
+      ],
+    },
+    {
+      barsPerChord: 1,
+      chords: [
+        { degree: 0, size: 3 },
+        { degree: 3, size: 3 },
+        { degree: 0, size: 3 },
+        { degree: 4, size: 3 },
+      ],
+    },
+    {
+      barsPerChord: 4,
+      chords: [
+        { degree: 0, size: 3 },
+        { degree: 6, size: 3 },
+      ],
+    },
     { barsPerChord: 4, chords: [{ degree: 0, size: 3 }] },
     {
       barsPerChord: 2,
@@ -105,7 +132,7 @@ export const technoStyle: StyleDefinition = {
     minimumEnergy: 0.45,
   },
   texture: { kind: "offbeat", voice: "perc", baseMidi: 0, chance: 0.6 },
-  pad: { voice: "pad", size: 3, velocity: 0.3, minimumEnergy: 0.35 },
+  pad: { voice: "pad", size: 3, velocity: 0.34, minimumEnergy: 0.1 },
   counter: {
     voice: "pulse",
     lowMidi: 60,
@@ -117,10 +144,10 @@ export const technoStyle: StyleDefinition = {
   },
   variants: {
     chordVoices: ["stab", "organ"],
-    melodyVoices: ["pulse", "softLead"],
+    melodyVoices: ["pulse", "softLead", "acid"],
     bassVoices: ["sawBass", "subBass"],
     padVoices: ["pad", "strings"],
-    counterVoices: ["pulse", "kalimba"],
+    counterVoices: ["acid", "acid", "pulse", "kalimba"],
     stabSteps: [
       [3, 7, 11],
       [2, 6, 10, 14],
@@ -130,6 +157,8 @@ export const technoStyle: StyleDefinition = {
     drumKits: [],
   },
   patterns: technoPatterns,
+  form: technoForm,
+  space: technoSpace,
   palette: {
     backgroundTop: "#0d0418",
     backgroundBottom: "#35104f",

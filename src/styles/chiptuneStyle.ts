@@ -1,6 +1,8 @@
 import type { BassStep } from "../domain/model/BassStep";
 import type { StyleDefinition } from "../domain/model/StyleDefinition";
+import { chiptuneForm } from "./forms/chiptuneForm";
 import { chiptunePatterns } from "./patterns/chiptunePatterns";
+import { chiptuneSpace } from "./space/spaces";
 
 const WALKING_EIGHTHS: BassStep[] = [
   { step: 0, interval: "root", lengthSteps: 2, weight: 1 },
@@ -26,6 +28,33 @@ export const chiptuneStyle: StyleDefinition = {
   scaleIds: ["major", "minor", "mixolydian", "majorPentatonic"],
   defaultScaleId: "major",
   progressions: [
+    {
+      barsPerChord: 1,
+      chords: [
+        { degree: 0, size: 3 },
+        { degree: 2, size: 3 },
+        { degree: 3, size: 3 },
+        { degree: 4, size: 3 },
+      ],
+    },
+    {
+      barsPerChord: 1,
+      chords: [
+        { degree: 5, size: 3 },
+        { degree: 4, size: 3 },
+        { degree: 3, size: 3 },
+        { degree: 4, size: 3 },
+      ],
+    },
+    {
+      barsPerChord: 2,
+      chords: [
+        { degree: 0, size: 3 },
+        { degree: 6, size: 3 },
+        { degree: 5, size: 3 },
+        { degree: 4, size: 3 },
+      ],
+    },
     {
       barsPerChord: 1,
       chords: [
@@ -120,6 +149,8 @@ export const chiptuneStyle: StyleDefinition = {
     drumKits: [],
   },
   patterns: chiptunePatterns,
+  form: chiptuneForm,
+  space: chiptuneSpace,
   palette: {
     backgroundTop: "#04140a",
     backgroundBottom: "#0a3a3a",
