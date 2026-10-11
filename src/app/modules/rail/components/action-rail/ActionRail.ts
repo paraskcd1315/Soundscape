@@ -1,13 +1,13 @@
 import { SsIconButton } from "@soundscape/design-system/atoms/ss-icon-button/SsIconButton";
 import { SsFloatingRail } from "@soundscape/design-system/organisms/ss-floating-rail/SsFloatingRail";
 import { SsMenu } from "@soundscape/design-system/organisms/ss-menu/SsMenu";
-import { STYLE_IDS } from "@soundscape/engine/constants/styleIds.constants";
 import type { StyleId } from "@soundscape/engine/models/StyleId";
 import type { SettingsStore } from "@soundscape/engine/services/settings/SettingsStore";
 import type { SeedService } from "../../../../core/services/seed/SeedService";
 import { STYLE_NAMES } from "../../../../shared/constants/names.constants";
 import { formatText } from "../../../../shared/utils/format.util";
 import { RAIL_STRINGS } from "../../constants/rail.strings";
+import { STYLE_GROUPS } from "../../constants/styleGroups.constants";
 
 export class ActionRail {
   readonly element: HTMLElement;
@@ -22,7 +22,13 @@ export class ActionRail {
     const rail = new SsFloatingRail(RAIL_STRINGS.railLabel);
     this.menu = new SsMenu({
       label: RAIL_STRINGS.styleMenu,
-      choices: STYLE_IDS.map((id) => ({ value: id, label: STYLE_NAMES[id] })),
+      groups: STYLE_GROUPS.map((group) => ({
+        label: group.label,
+        choices: group.styleIds.map((id) => ({
+          value: id,
+          label: STYLE_NAMES[id],
+        })),
+      })),
       value: store.get().styleId,
       onSelect: (value) => store.setStyle(value as StyleId),
     });

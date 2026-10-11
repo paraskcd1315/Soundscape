@@ -1,8 +1,8 @@
-import type { SsSelectChoice } from "../../../atoms/ss-select/types/SsSelectChoice";
+import type { SsMenuGroup } from "./SsMenuGroup";
 
 export interface SsMenuOptions {
   label: string;
-  choices: readonly SsSelectChoice[];
+  groups: readonly SsMenuGroup[];
   value: string;
   onSelect: (value: string) => void;
 }

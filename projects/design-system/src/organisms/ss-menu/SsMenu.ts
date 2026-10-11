@@ -18,19 +18,30 @@ export class SsMenu {
       role: "menu",
       "aria-label": options.label,
     });
-    for (const choice of options.choices) {
-      const item = createElement(
-        "button",
-        "ss-menu__item",
-        { type: "button", role: "menuitemradio" },
-        choice.label,
-      );
-      item.addEventListener("click", () => {
-        options.onSelect(choice.value);
-        this.close();
-      });
-      this.items.set(choice.value, item);
-      list.append(item);
+    for (const group of options.groups) {
+      if (group.label)
+        list.append(
+          createElement(
+            "span",
+            "ss-menu__group",
+            { role: "presentation" },
+            group.label,
+          ),
+        );
+      for (const choice of group.choices) {
+        const item = createElement(
+          "button",
+          "ss-menu__item",
+          { type: "button", role: "menuitemradio" },
+          choice.label,
+        );
+        item.addEventListener("click", () => {
+          options.onSelect(choice.value);
+          this.close();
+        });
+        this.items.set(choice.value, item);
+        list.append(item);
+      }
     }
     this.element = createElement(
       "div",
