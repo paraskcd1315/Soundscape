@@ -5,6 +5,8 @@ import type { Settings } from "@soundscape/engine/models/Settings";
 import { AUDIO_METRICS } from "../../constants/audio.constants";
 import { Deck } from "./Deck";
 import { DrumSampleBank } from "../samples/DrumSampleBank";
+import { preferPlaybackSession } from "../../utils/preferPlaybackSession.util";
+import type { AudioSessionNavigator } from "../../types/AudioSessionNavigator";
 import {
   MAX_LEAVING_DECKS,
   MILLISECONDS_PER_SECOND,
@@ -120,6 +122,7 @@ export class Player {
 
   private ensureContext(): AudioContext {
     if (this.context) return this.context;
+    preferPlaybackSession(navigator as AudioSessionNavigator);
     const context = new AudioContext({ latencyHint: "interactive" });
     const bus = context.createGain();
     const analyser = context.createAnalyser();
