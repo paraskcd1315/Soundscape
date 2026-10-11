@@ -4,6 +4,7 @@ import { SsMenu } from "@soundscape/design-system/organisms/ss-menu/SsMenu";
 import type { StyleId } from "@soundscape/engine/models/StyleId";
 import type { SettingsStore } from "@soundscape/engine/services/settings/SettingsStore";
 import type { SeedService } from "../../../../core/services/seed/SeedService";
+import type { DjMixService } from "../../../../core/services/djMix/DjMixService";
 import { STYLE_NAMES } from "../../../../shared/constants/names.constants";
 import { formatText } from "../../../../shared/utils/format.util";
 import { RAIL_STRINGS } from "../../constants/rail.strings";
@@ -14,10 +15,12 @@ export class ActionRail {
   readonly menu: SsMenu;
   private readonly styleButton: SsIconButton;
   private readonly lockButton: SsIconButton;
+  private readonly mixButton: SsIconButton;
 
   constructor(
     private readonly store: SettingsStore,
     private readonly seeds: SeedService,
+    private readonly djMix: DjMixService,
   ) {
     const rail = new SsFloatingRail(RAIL_STRINGS.railLabel);
     this.menu = new SsMenu({
@@ -62,15 +65,24 @@ export class ActionRail {
       testId: "lock-seed-button",
       onClick: () => seeds.toggleLock(),
     });
+    this.mixButton = new SsIconButton({
+      icon: "shuffle",
+      label: RAIL_STRINGS.djMixOn,
+      size: "lg",
+      testId: "dj-mix-button",
+      onClick: () => djMix.toggle(),
+    });
     rail.append(
       this.styleButton.element,
       surprise.element,
       reroll.element,
       this.lockButton.element,
+      this.mixButton.element,
     );
     this.element = rail.element;
     store.subscribe(() => this.render());
     seeds.subscribe(() => this.render());
+    djMix.subscribe(() => this.render());
     this.render();
   }
 
@@ -86,5 +98,10 @@ export class ActionRail {
       locked ? RAIL_STRINGS.unlockSeed : RAIL_STRINGS.lockSeed,
     );
     this.lockButton.setPressed(locked);
+    const mixing = this.djMix.isEnabled;
+    this.mixButton.setPressed(mixing);
+    this.mixButton.setLabel(
+      mixing ? RAIL_STRINGS.djMixOff : RAIL_STRINGS.djMixOn,
+    );
   }
 }

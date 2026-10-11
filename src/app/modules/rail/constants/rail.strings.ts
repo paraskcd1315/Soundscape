@@ -6,4 +6,6 @@ export const RAIL_STRINGS = {
   newSeed: "New seed",
   lockSeed: "Lock seed",
   unlockSeed: "Unlock seed",
+  djMixOn: "DJ mix: blend into a new style every 32 to 64 bars",
+  djMixOff: "Stop DJ mix",
 } as const;

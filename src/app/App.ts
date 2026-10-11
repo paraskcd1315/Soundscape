@@ -5,6 +5,7 @@ import { KeyboardService } from "./core/services/keyboard/KeyboardService";
 import { PlaybackService } from "./core/services/playback/PlaybackService";
 import { PresetLibraryService } from "./core/services/presets/PresetLibraryService";
 import { SeedService } from "./core/services/seed/SeedService";
+import { DjMixService } from "./core/services/djMix/DjMixService";
 import { SessionService } from "./core/services/session/SessionService";
 import { SafeStorage } from "./core/services/storage/SafeStorage";
 import { ToastService } from "./core/services/toast/ToastService";
@@ -25,10 +26,11 @@ export class App {
     const playback = new PlaybackService(store, toasts);
     const seeds = new SeedService(store, toasts);
     const presets = new PresetLibraryService(store, storage, toasts);
+    const djMix = new DjMixService(store, playback);
 
     const layout = new SsStageLayout();
     const stage = new StageView(store, playback.visualizerSource);
-    const rail = new ActionRail(store, seeds);
+    const rail = new ActionRail(store, seeds, djMix);
     const advanced = new AdvancedDrawer(store, seeds, presets);
     const player = new PlayerFooter(store, playback, presets, () =>
       advanced.toggle(),
