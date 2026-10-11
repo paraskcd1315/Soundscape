@@ -1,0 +1,31 @@
+.player-footer__now {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.player-footer__eyebrow {
+  font-size: var(--ss-fs-caption);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ss-text-tertiary);
+}
+
+.player-footer__title,
+.player-footer__detail {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.player-footer__title {
+  font-size: var(--ss-fs-body);
+  font-weight: 700;
+}
+
+.player-footer__detail {
+  font-size: var(--ss-fs-subhead);
+  color: var(--ss-text-secondary);
+}

@@ -61,4 +61,25 @@ describe("Transport", () => {
     expect(timeline.takeDue(1.5)).toHaveLength(1);
     expect(timeline.takeDue(5)).toHaveLength(1);
   });
+
+  it("hands over an early item even when a later one was pushed first", () => {
+    const timeline = new EventTimeline();
+    for (const [time, beatInBar] of [
+      [3, 3],
+      [1, 1],
+      [0, 0],
+    ] as const) {
+      timeline.push({
+        kind: "beat",
+        time,
+        layer: null,
+        midi: 0,
+        velocity: 1,
+        beatInBar,
+        barIndex: 0,
+      });
+    }
+    expect(timeline.takeDue(1.5).map((item) => item.time)).toEqual([0, 1]);
+    expect(timeline.takeDue(3).map((item) => item.time)).toEqual([3]);
+  });
 });

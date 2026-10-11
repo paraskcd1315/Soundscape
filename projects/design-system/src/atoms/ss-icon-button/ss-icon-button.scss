@@ -1,0 +1,56 @@
+@use '../../foundation/mixins/glass';
+
+.ss-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  padding: 0;
+  border-radius: 50%;
+  color: var(--ss-text-primary);
+  cursor: pointer;
+  @include glass.glass-soft;
+  @include glass.pressable;
+  @include glass.focus-ring;
+
+  &:hover {
+    border-color: var(--ss-border-strong);
+  }
+
+  &--sm {
+    width: 36px;
+    height: 36px;
+  }
+
+  &--md {
+    width: 44px;
+    height: 44px;
+  }
+
+  &--lg {
+    width: 56px;
+    height: 56px;
+
+    .ss-icon {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  &--accent {
+    background: var(--ss-accent);
+    color: var(--ss-accent-contrast);
+    border-color: transparent;
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--ss-accent) 45%, transparent);
+
+    &:hover {
+      background: color-mix(in srgb, var(--ss-accent) 85%, white);
+    }
+  }
+
+  &[aria-pressed='true']:not(&--accent) {
+    background: color-mix(in srgb, var(--ss-accent) 22%, transparent);
+    border-color: color-mix(in srgb, var(--ss-accent) 50%, transparent);
+    color: var(--ss-accent);
+  }
+}

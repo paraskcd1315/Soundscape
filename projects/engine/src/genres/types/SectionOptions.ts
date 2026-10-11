@@ -5,4 +5,5 @@ export interface SectionOptions {
   energyShift?: number;
   riserAtEnd?: boolean;
   impactAtStart?: boolean;
+  introOnly?: boolean;
 }

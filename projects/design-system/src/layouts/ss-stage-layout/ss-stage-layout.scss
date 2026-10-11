@@ -1,0 +1,40 @@
+@use '../../foundation/mixins/breakpoints';
+
+.ss-stage-layout {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: var(--ss-bg-base);
+
+  &__stage {
+    position: absolute;
+    inset: 0;
+    z-index: var(--ss-z-stage);
+  }
+
+  &__heading {
+    position: fixed;
+    top: calc(var(--ss-safe-top) + var(--ss-space-6));
+    left: calc(var(--ss-safe-left) + var(--ss-space-6));
+    z-index: var(--ss-z-chrome);
+    pointer-events: none;
+  }
+
+  &__overlay {
+    position: fixed;
+    inset: 0;
+    z-index: var(--ss-z-chrome);
+    pointer-events: none;
+
+    > * {
+      pointer-events: auto;
+    }
+  }
+
+  @include breakpoints.compact {
+    &__heading {
+      top: calc(var(--ss-safe-top) + var(--ss-space-4));
+      left: calc(var(--ss-safe-left) + var(--ss-space-4));
+    }
+  }
+}

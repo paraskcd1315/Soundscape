@@ -62,7 +62,7 @@ export const technoSpace: SpaceRecipe = {
   wobbleDepthSeconds: 0,
   wobbleHz: 0.4,
   drive: 2,
-  rumble: 0.55,
+  rumble: 0.2,
   toneCeilingHz: 18000,
 };
 

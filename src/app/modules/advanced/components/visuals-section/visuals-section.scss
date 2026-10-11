@@ -1,0 +1,19 @@
+.visuals-section__label {
+  font-size: var(--ss-fs-caption);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ss-text-secondary);
+}
+
+.visuals-section__swatches {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--ss-space-2);
+}
+
+.visuals-section__custom {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--ss-space-2);
+}

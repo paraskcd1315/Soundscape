@@ -1,0 +1,19 @@
+.ss-segmented {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ss-space-2);
+
+  &__label {
+    font-size: var(--ss-fs-caption);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ss-text-secondary);
+  }
+
+  &__group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ss-space-2);
+  }
+}

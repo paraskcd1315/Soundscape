@@ -5,7 +5,13 @@ export class EventTimeline {
   private items: TimelineItem[] = [];
 
   push(item: TimelineItem): void {
-    this.items.push(item);
+    let index = this.items.length;
+    while (
+      index > 0 &&
+      (this.items[index - 1] as TimelineItem).time > item.time
+    )
+      index--;
+    this.items.splice(index, 0, item);
     if (this.items.length > TRANSPORT_METRICS.timelineLimit) {
       this.items.splice(0, this.items.length - TRANSPORT_METRICS.timelineLimit);
     }

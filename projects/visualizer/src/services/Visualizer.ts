@@ -2,21 +2,31 @@ import type { StylePalette } from "@soundscape/engine/models/StylePalette";
 import type { VisualizerModeId } from "@soundscape/engine/models/VisualizerModeId";
 import { clamp } from "@soundscape/engine/utils/theory/clamp";
 import { BandAnalyzer } from "./BandAnalyzer";
+import { LayerActivity } from "./LayerActivity";
 import { toCss } from "../utils/colorMath.util";
-import { fillIdleSpectrum, fillIdleWaveform } from "../utils/fillIdleSignal.util";
+import {
+  fillIdleSpectrum,
+  fillIdleWaveform,
+} from "../utils/fillIdleSignal.util";
 import { createModes } from "../utils/modeCatalog.util";
 import { PaletteBlender } from "./PaletteBlender";
 import type { VisualizerFrame } from "../types/VisualizerFrame";
 import { VISUALIZER_METRICS } from "../constants/visualizer.constants";
 import type { VisualizerMode } from "../types/VisualizerMode";
 import type { VisualizerSource } from "../types/VisualizerSource";
-import { IDLE_BINS, MAX_DELTA_SECONDS, MIN_DELTA_SECONDS, DEFAULT_SAMPLE_RATE } from "./constants/Visualizer.constants";
+import {
+  IDLE_BINS,
+  MAX_DELTA_SECONDS,
+  MIN_DELTA_SECONDS,
+  DEFAULT_SAMPLE_RATE,
+} from "./constants/Visualizer.constants";
 
 export class Visualizer {
   private readonly g: CanvasRenderingContext2D;
   private readonly modes = createModes();
   private readonly bands = new BandAnalyzer(VISUALIZER_METRICS.bandCount);
   private readonly blender: PaletteBlender;
+  private readonly activity = new LayerActivity();
   private readonly idleSpectrum = new Uint8Array(IDLE_BINS);
   private readonly idleWaveform = new Uint8Array(IDLE_BINS);
   private readonly motionQuery = window.matchMedia(
@@ -153,6 +163,7 @@ export class Visualizer {
       if (item.kind === "beat")
         this.beatPulse = Math.max(this.beatPulse, item.velocity);
     }
+    this.activity.update(due, now, deltaSeconds);
 
     const palette = this.blender.step(deltaSeconds);
     const frame: VisualizerFrame = {
@@ -170,6 +181,8 @@ export class Visualizer {
       palette,
       intensity: this.intensity,
       reducedMotion: this.motionQuery.matches,
+      layerLevels: this.activity.levels,
+      beatPhase: this.activity.beatPhase(now),
     };
 
     if (this.mode.clearsFrame || this.needsOpaqueClear) {

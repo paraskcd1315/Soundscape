@@ -2,10 +2,12 @@ import type { VisualizerModeId } from "@soundscape/engine/models/VisualizerModeI
 import type { VisualizerMode } from "../types/VisualizerMode";
 import { BarsMode } from "../services/modes/BarsMode";
 import { FlowMode } from "../services/modes/FlowMode";
+import { OrbitMode } from "../services/modes/OrbitMode";
 import { RadialMode } from "../services/modes/RadialMode";
 
 export function createModes(): Record<VisualizerModeId, VisualizerMode> {
   return {
+    orbit: new OrbitMode(),
     bars: new BarsMode(),
     radial: new RadialMode(),
     flow: new FlowMode(),

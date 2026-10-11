@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { composeBar } from "@soundscape/engine/services/composer/composeBar";
-import { formAt, formLength } from "@soundscape/engine/services/composer/formAt";
+import {
+  formAt,
+  formLength,
+  loopLength,
+} from "@soundscape/engine/services/composer/formAt";
 import { BUILTIN_PRESETS } from "@soundscape/engine/services/presets/constants/builtinPresets.constants";
 import { defaultSettingsFor } from "@soundscape/engine/services/settings/defaultSettingsFor";
 import { LAYER_KINDS } from "@soundscape/engine/constants/layerKinds.constants";
@@ -18,14 +22,20 @@ describe.each(STYLE_IDS)("song form %s", (styleId) => {
     }
     expect(names).toEqual(style.form.sections.map((plan) => plan.name));
     expect(formAt(style.form, formLength(style.form)).plan.name).toBe(
-      style.form.sections[0]?.name,
+      style.form.sections.find((plan) => !plan.introOnly)?.name,
     );
+  });
+
+  it("plays the intro once and never ends the song on later loops", () => {
+    const loops = formLength(style.form) + loopLength(style.form) * 4;
+    for (let bar = formLength(style.form); bar < loops; bar++)
+      expect(formAt(style.form, bar).plan.introOnly).toBe(false);
   });
 
   it("keeps music playing in every bar of the whole cycle", () => {
     const settings = defaultSettingsFor(styleId, 21);
     let soundingUntil = 0;
-    for (let bar = 0; bar < formLength(style.form) * 2; bar++) {
+    for (let bar = 0; bar < formLength(style.form) * 3; bar++) {
       const events = composeBar(settings, bar);
       for (const event of events)
         soundingUntil = Math.max(
@@ -75,7 +85,12 @@ describe("arrangement moments", () => {
 
   it("puts a riser under the last bar before a drop", () => {
     const settings = defaultSettingsFor("techno", 8);
-    const lastBuildBar = 8 + 8 - 1;
+    const sections = STYLES.techno.form.sections;
+    const buildIndex = sections.findIndex((plan) => plan.name === "build");
+    const lastBuildBar =
+      sections
+        .slice(0, buildIndex + 1)
+        .reduce((sum, plan) => sum + plan.bars, 0) - 1;
     const swells = composeBar(settings, lastBuildBar).filter(
       (event) => event.voice === "swell",
     );

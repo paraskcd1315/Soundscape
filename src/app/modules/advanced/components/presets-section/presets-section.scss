@@ -1,0 +1,15 @@
+.presets-section__save {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--ss-space-2);
+
+  > .ss-text-input {
+    flex: 1;
+  }
+}
+
+.presets-section__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ss-space-2);
+}

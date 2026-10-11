@@ -4,6 +4,7 @@ import type { LayerMix } from "../../models/LayerMix";
 import type { Settings } from "../../models/Settings";
 import type { StyleId } from "../../models/StyleId";
 import { STYLES } from "../../genres/constants/styleCatalog.constants";
+import { DEFAULT_CUSTOM_COLORS } from "../../constants/visualizerThemeIds.constants";
 import { SETTINGS_METRICS } from "./constants/settings.constants";
 
 function defaultLayers(): Record<LayerKind, LayerMix> {
@@ -38,7 +39,9 @@ export function defaultSettingsFor(
     reverb: style.defaultReverb,
     masterVolume: SETTINGS_METRICS.defaultMasterVolume,
     layers: defaultLayers(),
-    visualizerMode: "radial",
+    visualizerMode: "orbit",
     visualizerIntensity: SETTINGS_METRICS.defaultVisualizerIntensity,
+    visualizerTheme: "style",
+    visualizerColors: DEFAULT_CUSTOM_COLORS,
   };
 }

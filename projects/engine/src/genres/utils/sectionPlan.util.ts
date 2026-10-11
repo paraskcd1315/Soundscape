@@ -17,5 +17,6 @@ export function section(
     energyShift: options.energyShift ?? 0,
     riserAtEnd: options.riserAtEnd ?? false,
     impactAtStart: options.impactAtStart ?? false,
+    introOnly: options.introOnly ?? false,
   };
 }

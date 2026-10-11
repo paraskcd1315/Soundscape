@@ -5,7 +5,13 @@ import { VISUALIZER_MODE_IDS } from "../../constants/visualizerModeIds.constants
 import { STYLES } from "../../genres/constants/styleCatalog.constants";
 import { defaultSettingsFor } from "./defaultSettingsFor";
 import { SETTINGS_METRICS } from "./constants/settings.constants";
-import { isRecord, numberOr, sanitizeLayers } from "./utils/sanitize.util";
+import { VISUALIZER_THEME_IDS } from "../../constants/visualizerThemeIds.constants";
+import {
+  isRecord,
+  numberOr,
+  sanitizeColors,
+  sanitizeLayers,
+} from "./utils/sanitize.util";
 
 export function sanitizeSettings(
   raw: unknown,
@@ -64,6 +70,15 @@ export function sanitizeSettings(
       base.visualizerIntensity,
       0,
       1,
+    ),
+    visualizerTheme: VISUALIZER_THEME_IDS.includes(
+      source.visualizerTheme as never,
+    )
+      ? (source.visualizerTheme as Settings["visualizerTheme"])
+      : base.visualizerTheme,
+    visualizerColors: sanitizeColors(
+      source.visualizerColors,
+      base.visualizerColors,
     ),
   };
 }

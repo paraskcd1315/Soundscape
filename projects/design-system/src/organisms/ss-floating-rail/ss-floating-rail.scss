@@ -1,0 +1,21 @@
+@use '../../foundation/mixins/breakpoints';
+
+.ss-floating-rail {
+  position: fixed;
+  top: 50%;
+  right: calc(var(--ss-safe-right) + var(--ss-space-5));
+  z-index: var(--ss-z-chrome);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--ss-space-3);
+  transform: translateY(-50%);
+
+  @include breakpoints.compact {
+    top: calc(var(--ss-safe-top) + var(--ss-space-4));
+    right: calc(var(--ss-safe-right) + var(--ss-space-3));
+    flex-direction: row;
+    gap: var(--ss-space-2);
+    transform: none;
+  }
+}

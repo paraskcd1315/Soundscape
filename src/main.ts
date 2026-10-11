@@ -1,5 +1,5 @@
-import "./presentation/theme/app.css";
-import { App } from "./presentation/app/App";
+import "@soundscape/design-system/foundation/styles.scss";
+import { App } from "./app/App";
 
 const root = document.getElementById("app");
 if (!root) throw new Error("Missing #app element");

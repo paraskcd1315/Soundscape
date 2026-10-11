@@ -1,8 +1,9 @@
-import type { LayerKind } from './LayerKind';
-import type { LayerMix } from './LayerMix';
-import type { ScaleId } from './ScaleId';
-import type { StyleId } from './StyleId';
-import type { VisualizerModeId } from './VisualizerModeId';
+import type { LayerKind } from "./LayerKind";
+import type { LayerMix } from "./LayerMix";
+import type { ScaleId } from "./ScaleId";
+import type { StyleId } from "./StyleId";
+import type { VisualizerModeId } from "./VisualizerModeId";
+import type { VisualizerThemeId } from "./VisualizerThemeId";
 
 export interface Settings {
   styleId: StyleId;
@@ -22,4 +23,6 @@ export interface Settings {
   layers: Record<LayerKind, LayerMix>;
   visualizerMode: VisualizerModeId;
   visualizerIntensity: number;
+  visualizerTheme: VisualizerThemeId;
+  visualizerColors: readonly [string, string];
 }

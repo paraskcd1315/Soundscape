@@ -1,0 +1,26 @@
+@use '../../foundation/mixins/glass';
+
+.ss-toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--ss-safe-bottom) + 112px);
+  z-index: var(--ss-z-toast);
+  max-width: min(92vw, 420px);
+  padding: var(--ss-space-3) var(--ss-space-5);
+  border-radius: var(--ss-radius-pill);
+  font-size: var(--ss-fs-subhead);
+  font-weight: 600;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 16px);
+  transition:
+    opacity var(--ss-dur-morph) var(--ss-ease),
+    transform var(--ss-dur-morph) var(--ss-ease);
+  @include glass.glass-strong;
+
+  &--visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}

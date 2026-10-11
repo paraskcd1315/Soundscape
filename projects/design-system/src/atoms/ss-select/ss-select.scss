@@ -1,0 +1,33 @@
+@use '../../foundation/mixins/glass';
+
+.ss-select {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ss-space-1);
+  min-width: 0;
+
+  &__label {
+    font-size: var(--ss-fs-caption);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ss-text-secondary);
+  }
+
+  &__input {
+    height: var(--ss-control-height);
+    padding: 0 var(--ss-space-8) 0 var(--ss-space-4);
+    border: 1px solid var(--ss-border);
+    border-radius: var(--ss-radius-md);
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 14px center / 16px,
+      var(--ss-surface-container);
+    appearance: none;
+    cursor: pointer;
+    @include glass.focus-ring;
+
+    option {
+      background: var(--ss-surface-container);
+    }
+  }
+}

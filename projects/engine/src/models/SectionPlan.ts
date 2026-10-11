@@ -7,4 +7,5 @@ export interface SectionPlan {
   energyShift: number;
   riserAtEnd: boolean;
   impactAtStart: boolean;
+  introOnly: boolean;
 }

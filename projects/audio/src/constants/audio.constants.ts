@@ -22,12 +22,12 @@ export const AUDIO_METRICS = {
     release: 0.2,
   },
   rumble: {
-    reverbSeconds: 3.5,
-    reverbDecay: 3,
-    drive: 6,
-    lowPassHz: 115,
-    highPassHz: 32,
-    duckRelease: 0.22,
+    reverbSeconds: 1.4,
+    reverbDecay: 4,
+    drive: 1.8,
+    lowPassHz: 95,
+    highPassHz: 45,
+    duckRelease: 0.16,
   },
   saturationDrive: 1.6,
   layerReverbSend: {

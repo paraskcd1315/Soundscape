@@ -6,6 +6,7 @@ export const lofiForm: SongForm = {
     section("intro", 4, {
       mask: { drums: 0, bass: 0, melody: 0, counter: 0 },
       energyShift: -0.15,
+      introOnly: true,
     }),
     section("groove a", 8, { mask: { melody: 0.8, counter: 0.4 } }),
     section("groove b", 8, { energyShift: 0.1 }),

@@ -1,1 +1,1 @@
-export const VISUALIZER_MODE_IDS = ['bars', 'radial', 'flow'] as const;
+export const VISUALIZER_MODE_IDS = ["orbit", "radial", "bars", "flow"] as const;

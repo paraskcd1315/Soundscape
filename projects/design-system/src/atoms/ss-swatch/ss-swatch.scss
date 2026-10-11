@@ -1,0 +1,18 @@
+@use '../../foundation/mixins/glass';
+
+.ss-swatch {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 2px solid var(--ss-border-subtle);
+  border-radius: 50%;
+  background: var(--ss-swatch-fill);
+  cursor: pointer;
+  @include glass.pressable;
+  @include glass.focus-ring;
+
+  &[aria-pressed='true'] {
+    border-color: #fff;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--ss-accent) 45%, transparent);
+  }
+}

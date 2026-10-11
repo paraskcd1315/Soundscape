@@ -19,6 +19,14 @@ export function mixRgb(from: RgbColor, to: RgbColor, amount: number): RgbColor {
   ];
 }
 
+export function toHex(color: RgbColor): string {
+  return `#${color.map((channel) => Math.round(channel).toString(16).padStart(2, "0")).join("")}`;
+}
+
+export function mixHex(from: string, to: string, amount: number): string {
+  return toHex(mixRgb(parseHex(from), parseHex(to), amount));
+}
+
 export function toCss(color: RgbColor, alpha = 1): string {
   return `rgba(${Math.round(color[0])},${Math.round(color[1])},${Math.round(color[2])},${alpha})`;
 }

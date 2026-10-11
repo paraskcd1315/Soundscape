@@ -1,0 +1,72 @@
+@use '../../foundation/mixins/glass';
+
+.ss-button {
+  $self: &;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ss-space-2);
+  height: var(--ss-control-height);
+  padding: 0 var(--ss-space-5);
+  border: 1px solid transparent;
+  border-radius: var(--ss-radius-pill);
+  font-weight: 600;
+  font-size: var(--ss-fs-body);
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  @include glass.pressable;
+  @include glass.focus-ring;
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  &--sm {
+    height: var(--ss-control-height-sm);
+    padding: 0 var(--ss-space-4);
+    font-size: var(--ss-fs-subhead);
+  }
+
+  &--primary {
+    background: var(--ss-accent);
+    color: var(--ss-accent-contrast);
+    box-shadow: 0 6px 18px color-mix(in srgb, var(--ss-accent) 40%, transparent);
+
+    &:hover:not(:disabled) {
+      background: color-mix(in srgb, var(--ss-accent) 85%, white);
+    }
+  }
+
+  &--secondary {
+    background: var(--ss-glass-bg);
+    border-color: var(--ss-border);
+    backdrop-filter: var(--ss-blur-soft);
+    -webkit-backdrop-filter: var(--ss-blur-soft);
+
+    &:hover:not(:disabled) {
+      border-color: var(--ss-border-strong);
+    }
+  }
+
+  &--ghost {
+    background: transparent;
+    color: var(--ss-accent);
+
+    &:hover:not(:disabled) {
+      background: color-mix(in srgb, var(--ss-accent) 16%, transparent);
+    }
+  }
+
+  &--danger {
+    background: color-mix(in srgb, var(--ss-danger) 16%, transparent);
+    border-color: color-mix(in srgb, var(--ss-danger) 40%, transparent);
+    color: var(--ss-danger);
+  }
+
+  #{$self}__label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

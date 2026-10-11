@@ -1,4 +1,5 @@
 import type { TimelineItem } from "@soundscape/engine/services/transport/types/TimelineItem";
+import type { LayerKind } from "@soundscape/engine/models/LayerKind";
 import type { BlendedPalette } from "./BlendedPalette";
 
 export interface VisualizerFrame {
@@ -16,4 +17,6 @@ export interface VisualizerFrame {
   palette: BlendedPalette;
   intensity: number;
   reducedMotion: boolean;
+  layerLevels: Readonly<Record<LayerKind, number>>;
+  beatPhase: number;
 }

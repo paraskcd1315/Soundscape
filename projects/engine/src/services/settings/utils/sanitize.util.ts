@@ -3,6 +3,7 @@ import type { LayerKind } from "../../../models/LayerKind";
 import type { LayerMix } from "../../../models/LayerMix";
 import { clamp } from "../../../utils/theory/clamp";
 import type { LooseRecord } from "../types/LooseRecord";
+import { HEX_COLOR_PATTERN } from "../../../constants/visualizerThemeIds.constants";
 
 export function isRecord(value: unknown): value is LooseRecord {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -17,6 +18,17 @@ export function numberOr(
   return typeof value === "number" && Number.isFinite(value)
     ? clamp(value, low, high)
     : fallback;
+}
+
+export function sanitizeColors(
+  raw: unknown,
+  fallback: readonly [string, string],
+): readonly [string, string] {
+  if (!Array.isArray(raw) || raw.length !== 2) return fallback;
+  const [first, second] = raw as unknown[];
+  const valid = (value: unknown): value is string =>
+    typeof value === "string" && HEX_COLOR_PATTERN.test(value);
+  return valid(first) && valid(second) ? [first, second] : fallback;
 }
 
 export function sanitizeLayers(

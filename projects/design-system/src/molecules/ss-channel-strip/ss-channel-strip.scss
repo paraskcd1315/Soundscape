@@ -1,0 +1,16 @@
+.ss-channel-strip {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--ss-space-3);
+
+  &__color {
+    width: 6px;
+    height: 36px;
+    border-radius: var(--ss-radius-pill);
+  }
+
+  &--muted .ss-slider {
+    opacity: 0.4;
+  }
+}
