@@ -18,6 +18,8 @@ export const ambientSpace: SpaceRecipe = {
   wobbleDepthSeconds: 0.0004,
   wobbleHz: 0.3,
   drive: 1.1,
+  rumble: 0,
+  toneCeilingHz: 9000,
 };
 
 export const lofiSpace: SpaceRecipe = {
@@ -38,6 +40,8 @@ export const lofiSpace: SpaceRecipe = {
   wobbleDepthSeconds: 0.0012,
   wobbleHz: 0.55,
   drive: 2.4,
+  rumble: 0,
+  toneCeilingHz: 5200,
 };
 
 export const technoSpace: SpaceRecipe = {
@@ -58,6 +62,8 @@ export const technoSpace: SpaceRecipe = {
   wobbleDepthSeconds: 0,
   wobbleHz: 0.4,
   drive: 2,
+  rumble: 0.55,
+  toneCeilingHz: 18000,
 };
 
 export const chiptuneSpace: SpaceRecipe = {
@@ -78,6 +84,8 @@ export const chiptuneSpace: SpaceRecipe = {
   wobbleDepthSeconds: 0,
   wobbleHz: 0.4,
   drive: 1,
+  rumble: 0,
+  toneCeilingHz: 12000,
 };
 
 export const jazzSpace: SpaceRecipe = {
@@ -98,4 +106,6 @@ export const jazzSpace: SpaceRecipe = {
   wobbleDepthSeconds: 0.0003,
   wobbleHz: 0.4,
   drive: 1.4,
+  rumble: 0,
+  toneCeilingHz: 14000,
 };

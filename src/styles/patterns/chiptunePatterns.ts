@@ -2,41 +2,48 @@ import type { PatternRules } from "../../domain/model/PatternRules";
 
 export const chiptunePatterns: PatternRules = {
   templateChance: 0.5,
-  drums: [
+  drumGrooves: [
     {
-      voice: "kick",
-      anchors: [0, 8],
-      weights: [0, 0, 0, 0.2, 0, 0, 0.3, 0, 0, 0, 0.6, 0, 0, 0.2, 0.4, 0],
-      minExtra: 0,
-      maxExtra: 3,
-      presence: 1,
-    },
-    {
-      voice: "snare",
-      anchors: [4, 12],
-      weights: [0, 0, 0, 0, 0, 0, 0, 0.3, 0, 0, 0, 0, 0, 0, 0.3, 0.6],
-      minExtra: 0,
-      maxExtra: 2,
-      presence: 1,
-    },
-    {
-      voice: "hat",
-      anchors: [],
-      weights: [
-        0.9, 0.15, 0.9, 0.15, 0.9, 0.15, 0.9, 0.15, 0.9, 0.15, 0.9, 0.15, 0.9,
-        0.15, 0.9, 0.15,
+      name: "eight bit",
+      rules: [
+        {
+          voice: "kick",
+          anchors: [0, 8],
+          weights: [0, 0, 0, 0.2, 0, 0, 0.3, 0, 0, 0, 0.6, 0, 0, 0.2, 0.4, 0],
+          minExtra: 0,
+          maxExtra: 3,
+          presence: 1,
+        },
+        {
+          voice: "snare",
+          anchors: [4, 12],
+          weights: [0, 0, 0, 0, 0, 0, 0, 0.3, 0, 0, 0, 0, 0, 0, 0.3, 0.6],
+          minExtra: 0,
+          maxExtra: 2,
+          presence: 1,
+        },
+        {
+          voice: "hat",
+          anchors: [],
+          weights: [
+            0.9, 0.15, 0.9, 0.15, 0.9, 0.15, 0.9, 0.15, 0.9, 0.15, 0.9, 0.15,
+            0.9, 0.15, 0.9, 0.15,
+          ],
+          minExtra: 8,
+          maxExtra: 14,
+          presence: 1,
+        },
+        {
+          voice: "perc",
+          anchors: [],
+          weights: [
+            0, 0.5, 0, 0.5, 0, 0.5, 0, 0.5, 0, 0.5, 0, 0.5, 0, 0.5, 0, 0.5,
+          ],
+          minExtra: 2,
+          maxExtra: 5,
+          presence: 0.35,
+        },
       ],
-      minExtra: 8,
-      maxExtra: 14,
-      presence: 1,
-    },
-    {
-      voice: "perc",
-      anchors: [],
-      weights: [0, 0.5, 0, 0.5, 0, 0.5, 0, 0.5, 0, 0.5, 0, 0.5, 0, 0.5, 0, 0.5],
-      minExtra: 2,
-      maxExtra: 5,
-      presence: 0.35,
     },
   ],
   bass: {

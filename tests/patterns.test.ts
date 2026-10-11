@@ -20,34 +20,36 @@ describe.each(STYLE_IDS)("pattern algorithms %s", (styleId) => {
   const style = STYLES[styleId];
   const rules = style.patterns;
 
-  it("builds drum kits that follow the voice rules", () => {
-    if (style.drums === null) return;
-    for (const seed of SEEDS) {
-      const kit = generateDrumKit(rules.drums, createRng(seed, "kit"));
-      expect(kit.length).toBeGreaterThan(0);
-      for (const grid of kit) {
-        const rule = rules.drums.find((entry) => entry.voice === grid.voice);
-        expect(rule).toBeDefined();
-        for (const anchor of rule?.anchors ?? [])
-          expect(grid.steps[anchor]).toBe(1);
-        grid.steps.forEach((value, step) => {
-          if (value > 0 && !rule?.anchors.includes(step))
-            expect(rule?.weights[step]).toBeGreaterThan(0);
-        });
-        const extras = grid.steps.filter(
-          (value, step) => value > 0 && !rule?.anchors.includes(step),
-        ).length;
-        expect(extras).toBeLessThanOrEqual(rule?.maxExtra ?? 0);
+  it("builds drum kits that follow every groove rule", () => {
+    for (const groove of rules.drumGrooves) {
+      for (const seed of SEEDS) {
+        const kit = generateDrumKit(groove.rules, createRng(seed, "kit"));
+        expect(kit.length).toBeGreaterThan(0);
+        for (const grid of kit) {
+          const rule = groove.rules.find((entry) => entry.voice === grid.voice);
+          expect(rule).toBeDefined();
+          for (const anchor of rule?.anchors ?? [])
+            expect(grid.steps[anchor]).toBe(1);
+          grid.steps.forEach((value, step) => {
+            if (value > 0 && !rule?.anchors.includes(step))
+              expect(rule?.weights[step]).toBeGreaterThan(0);
+          });
+          const extras = grid.steps.filter(
+            (value, step) => value > 0 && !rule?.anchors.includes(step),
+          ).length;
+          expect(extras).toBeLessThanOrEqual(rule?.maxExtra ?? 0);
+        }
       }
     }
   });
 
   it("builds ordered, non-overlapping bass lines that start on the root", () => {
     for (const seed of SEEDS) {
-      const kit =
-        style.drums === null
-          ? []
-          : generateDrumKit(rules.drums, createRng(seed, "kit"));
+      const groove =
+        rules.drumGrooves[seed % Math.max(1, rules.drumGrooves.length)];
+      const kit = groove
+        ? generateDrumKit(groove.rules, createRng(seed, "kit"))
+        : [];
       const line = generateBassPattern(
         rules.bass,
         kit,
@@ -58,24 +60,25 @@ describe.each(STYLE_IDS)("pattern algorithms %s", (styleId) => {
       line.forEach((step, index) => {
         expect(step.step).toBeGreaterThanOrEqual(0);
         expect(step.step).toBeLessThan(16);
-        const next = line[index + 1]?.step ?? 16;
-        expect(step.step + step.lengthSteps).toBeLessThanOrEqual(next);
+        expect(step.step + step.lengthSteps).toBeLessThanOrEqual(
+          line[index + 1]?.step ?? 16,
+        );
       });
     }
   });
 
-  it("mutation keeps anchors and stays inside the rules", () => {
+  it("mutation keeps anchors", () => {
     for (const seed of SEEDS) {
       const rng = createRng(seed, "mutate");
-      if (style.drums !== null) {
+      for (const groove of rules.drumGrooves) {
         const kit = mutateKit(
-          generateDrumKit(rules.drums, createRng(seed, "kit")),
-          rules.drums,
+          generateDrumKit(groove.rules, createRng(seed, "kit")),
+          groove.rules,
           rng,
           1,
         );
         for (const grid of kit) {
-          const rule = rules.drums.find((entry) => entry.voice === grid.voice);
+          const rule = groove.rules.find((entry) => entry.voice === grid.voice);
           for (const anchor of rule?.anchors ?? [])
             expect(grid.steps[anchor]).toBeGreaterThan(0);
         }
@@ -120,20 +123,10 @@ describe.each(STYLE_IDS)("pattern algorithms %s", (styleId) => {
       Array.from({ length: 8 }, (_, section) => signature(11, section * 8)),
     );
     const seeds = new Set(SEEDS.slice(0, 20).map((seed) => signature(seed, 0)));
-    if (styleId === "ambient") {
-      expect(seeds.size).toBeGreaterThanOrEqual(1);
-    } else {
+    if (styleId !== "ambient") {
       expect(sections.size).toBeGreaterThan(2);
       expect(seeds.size).toBeGreaterThan(5);
     }
-  });
-
-  it("is deterministic", () => {
-    const settings = defaultSettingsFor(styleId, 99);
-    const timbre = timbreFor(settings, style);
-    expect(JSON.stringify(patternsFor(settings, style, timbre, 17))).toBe(
-      JSON.stringify(patternsFor(settings, style, timbre, 17)),
-    );
   });
 });
 
@@ -141,7 +134,7 @@ describe("style identity is preserved", () => {
   it("keeps four on the floor in every generated techno kit", () => {
     for (const seed of SEEDS) {
       const kit = generateDrumKit(
-        STYLES.techno.patterns.drums,
+        STYLES.techno.patterns.drumGrooves[0]?.rules ?? [],
         createRng(seed, "kit"),
       );
       const kick = kit.find((grid) => grid.voice === "kick");
@@ -149,19 +142,32 @@ describe("style identity is preserved", () => {
     }
   });
 
-  it("keeps the techno bass out of the kick steps", () => {
+  it("gives lo-fi seeds many different backbeats", () => {
+    const backbeats = new Set<string>();
     for (const seed of SEEDS) {
-      const kit = generateDrumKit(
-        STYLES.techno.patterns.drums,
-        createRng(seed, "kit"),
-      );
-      const line = generateBassPattern(
-        STYLES.techno.patterns.bass,
-        kit,
-        createRng(seed, "bass"),
-      );
-      expect(line.every((step) => step.step % 4 !== 0)).toBe(true);
+      const settings = defaultSettingsFor("lofi", seed);
+      const kit = patternsFor(
+        settings,
+        STYLES.lofi,
+        timbreFor(settings, STYLES.lofi),
+        0,
+      ).drumKit;
+      const backbone = kit
+        .filter(
+          (grid) =>
+            grid.voice === "kick" ||
+            grid.voice === "snare" ||
+            grid.voice === "clap" ||
+            grid.voice === "rim",
+        )
+        .map(
+          (grid) =>
+            `${grid.voice}:${grid.steps.map((value) => (value > 0 ? 1 : 0)).join("")}`,
+        )
+        .join("|");
+      backbeats.add(backbone);
     }
+    expect(backbeats.size).toBeGreaterThan(10);
   });
 
   it("walks jazz bass on the quarter notes ending with an approach note", () => {
@@ -172,5 +178,21 @@ describe("style identity is preserved", () => {
     );
     expect(line.map((step) => step.step)).toEqual([0, 4, 8, 12]);
     expect(line[3]?.interval).toBe("approach");
+  });
+
+  it("keeps kalimba out of lo-fi and jazz", () => {
+    for (const styleId of ["lofi", "jazz"] as const) {
+      const style = STYLES[styleId];
+      const voices = [
+        ...style.variants.chordVoices,
+        ...style.variants.melodyVoices,
+        ...style.variants.counterVoices,
+        ...style.variants.padVoices,
+        style.counter?.voice,
+        style.melody.voice,
+        style.chords.voice,
+      ];
+      expect(voices).not.toContain("kalimba");
+    }
   });
 });

@@ -1,4 +1,4 @@
-import type { TonalVoiceId } from './VoiceId';
+import type { TonalVoiceId } from "./VoiceId";
 
 export interface MelodyRecipe {
   voice: TonalVoiceId;
@@ -11,4 +11,5 @@ export interface MelodyRecipe {
   noteLengthSteps: readonly number[];
   stepBias: number;
   minimumEnergy: number;
+  chromaticChance?: number;
 }

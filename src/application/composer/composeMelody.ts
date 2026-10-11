@@ -1,5 +1,6 @@
 import type { NoteEvent } from "../../domain/model/NoteEvent";
 import { createRng } from "../../domain/random/createRng";
+import type { SeededRng } from "../../domain/random/SeededRng";
 import { clamp } from "../../domain/theory/clamp";
 import { degreeToMidi } from "../../domain/theory/degreeToMidi";
 import { foldIntoRange } from "../../domain/theory/foldIntoRange";
@@ -26,7 +27,7 @@ export function composeMelody(context: BarContext): NoteEvent[] {
   if (rng.chance(clamp(restChance, 0, 0.95))) return [];
 
   const motif = varyMotif(
-    motifFor(context.settings.seed, context.section, recipe),
+    motifFor(context.settings.seed, context.section, recipe, context.timbre),
     rng,
     context.settings.complexity,
   );
@@ -37,7 +38,7 @@ export function composeMelody(context: BarContext): NoteEvent[] {
   motif.forEach((note, index) => {
     if (index > 0 && !rng.chance(keepProbability)) return;
     const isStrong = note.step % 4 === 0;
-    const rawDegree = note.degreeOffset;
+    const rawDegree = note.degreeOffset + context.timbre.melodyShift;
     const degree = isStrong
       ? snapToChordTone(
           rawDegree,
@@ -71,5 +72,19 @@ export function composeMelody(context: BarContext): NoteEvent[] {
     });
   });
 
-  return events;
+  return withChromaticApproach(events, recipe.chromaticChance ?? 0, rng);
+}
+
+function withChromaticApproach(
+  events: NoteEvent[],
+  chance: number,
+  rng: SeededRng,
+): NoteEvent[] {
+  if (chance <= 0) return events;
+  return events.map((event, index) => {
+    const next = events[index + 1];
+    if (!next || Number.isInteger(event.startBeat * 2)) return event;
+    if (!rng.chance(chance)) return event;
+    return { ...event, midi: next.midi + (next.midi >= event.midi ? -1 : 1) };
+  });
 }

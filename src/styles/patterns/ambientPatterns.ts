@@ -2,7 +2,7 @@ import type { PatternRules } from "../../domain/model/PatternRules";
 
 export const ambientPatterns: PatternRules = {
   templateChance: 0.7,
-  drums: [],
+  drumGrooves: [],
   bass: {
     anchors: [0],
     weights: [0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0, 0, 0, 0, 0, 0, 0],

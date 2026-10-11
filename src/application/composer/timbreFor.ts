@@ -21,5 +21,9 @@ export function timbreFor(
     drumKit:
       variants.drumKits.length > 0 ? rng.pick(variants.drumKits) : fallbackKit,
     chordCenterShift: rng.pick(variants.chordCenterShifts),
+    melodyShift: rng.int(-2, 3),
+    melodyBusy: rng.range(0.6, 1.5),
+    leapBias: rng.range(-0.3, 0.25),
+    syncopation: rng.range(0, 1),
   };
 }

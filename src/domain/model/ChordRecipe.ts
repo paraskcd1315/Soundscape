@@ -1,6 +1,6 @@
-import type { TonalVoiceId } from './VoiceId';
+import type { TonalVoiceId } from "./VoiceId";
 
-export type ChordRhythm = 'held' | 'stab' | 'arp';
+export type ChordRhythm = "held" | "stab" | "arp";
 
 export interface ChordRecipe {
   voice: TonalVoiceId;
@@ -11,4 +11,5 @@ export interface ChordRecipe {
   stabSteps: readonly number[];
   arpStepLength: number;
   velocity: number;
+  rootless?: boolean;
 }

@@ -35,9 +35,14 @@ export interface StabPatternRules {
   maxExtra: number;
 }
 
+export interface DrumGroove {
+  name: string;
+  rules: readonly DrumVoiceRule[];
+}
+
 export interface PatternRules {
   templateChance: number;
-  drums: readonly DrumVoiceRule[];
+  drumGrooves: readonly DrumGroove[];
   bass: BassPatternRules;
   stabs: StabPatternRules | null;
 }

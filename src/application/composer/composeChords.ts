@@ -17,7 +17,16 @@ function pingPongIndex(position: number, length: number): number {
 
 export function composeChords(context: BarContext): NoteEvent[] {
   const recipe = context.style.chords;
-  const { harmony } = context;
+  const { harmony: fullHarmony } = context;
+  const harmony =
+    recipe.rootless && fullHarmony.voicing.length >= 4
+      ? {
+          ...fullHarmony,
+          voicing: fullHarmony.voicing.filter(
+            (midi) => midi % 12 !== fullHarmony.pitchClasses[0],
+          ),
+        }
+      : fullHarmony;
   const rng = createRng(context.settings.seed, "chords", context.barIndex);
   const energyScale = 0.8 + 0.2 * context.energy;
   const velocity = clamp(recipe.velocity * energyScale, 0.05, 1);

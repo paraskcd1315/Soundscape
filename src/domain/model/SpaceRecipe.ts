@@ -10,4 +10,6 @@ export interface SpaceRecipe {
   wobbleDepthSeconds: number;
   wobbleHz: number;
   drive: number;
+  rumble: number;
+  toneCeilingHz: number;
 }

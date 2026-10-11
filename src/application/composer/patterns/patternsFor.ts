@@ -23,12 +23,14 @@ function buildFresh(
   const rules = style.patterns;
   const rng = createRng(settings.seed, "pattern-base", style.id, salt);
   const useTemplate = (): boolean => rng.chance(rules.templateChance);
+  const drumRules =
+    rules.drumGrooves.length > 0 ? rng.pick(rules.drumGrooves).rules : [];
   const drumKit =
-    style.drums === null
+    style.drums === null || drumRules.length === 0
       ? []
       : useTemplate() && timbre.drumKit.length > 0
         ? timbre.drumKit
-        : generateDrumKit(rules.drums, rng);
+        : generateDrumKit(drumRules, rng);
   const bass =
     useTemplate() && !rules.bass.walking
       ? rng.pick(style.bass.patterns)
@@ -37,7 +39,7 @@ function buildFresh(
     rules.stabs === null || useTemplate()
       ? timbre.stabSteps
       : generateStabSteps(rules.stabs, rng);
-  return { drumKit, bass, stabSteps };
+  return { drumKit, drumRules, bass, stabSteps };
 }
 
 function evolve(
@@ -53,7 +55,8 @@ function evolve(
     drumKit:
       style.drums === null
         ? []
-        : mutateKit(base.drumKit, rules.drums, rng, amount),
+        : mutateKit(base.drumKit, base.drumRules, rng, amount),
+    drumRules: base.drumRules,
     bass: mutateBass(base.bass, rules.bass, rng, amount),
     stabSteps:
       rules.stabs === null

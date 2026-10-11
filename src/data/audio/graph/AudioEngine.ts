@@ -35,6 +35,10 @@ export class AudioEngine implements NoteSink {
   private readonly shaper: WaveShaperNode;
   private readonly curves = new Map<number, Float32Array<ArrayBuffer>>();
   private readonly masterGain: GainNode;
+  private readonly rumbleBus: GainNode;
+  private readonly rumbleDuck: GainNode;
+  private readonly rumbleReturn: GainNode;
+  private rumbleAmount = 0;
   private readonly voiceEnds: number[] = [];
   private brightness = 0.5;
   private ducking = false;
@@ -61,7 +65,7 @@ export class AudioEngine implements NoteSink {
 
     this.shaper = context.createWaveShaper();
     this.shaper.curve = this.curveFor(AUDIO_METRICS.saturationDrive);
-    this.shaper.oversample = "2x";
+    this.shaper.oversample = "4x";
 
     const compressor = context.createDynamicsCompressor();
     compressor.threshold.value = AUDIO_METRICS.compressor.threshold;
@@ -99,6 +103,34 @@ export class AudioEngine implements NoteSink {
     this.delayNode.connect(delayTone);
     delayTone.connect(this.delayFeedback).connect(this.delayNode);
     delayTone.connect(this.delayReturn).connect(this.toneFilter);
+
+    this.rumbleBus = context.createGain();
+    this.rumbleDuck = context.createGain();
+    this.rumbleReturn = context.createGain();
+    this.rumbleReturn.gain.value = 0;
+    const rumbleSpace = context.createConvolver();
+    rumbleSpace.buffer = createImpulseResponse(
+      context,
+      AUDIO_METRICS.rumble.reverbSeconds,
+      AUDIO_METRICS.rumble.reverbDecay,
+    );
+    const rumbleDrive = context.createWaveShaper();
+    rumbleDrive.curve = this.curveFor(AUDIO_METRICS.rumble.drive);
+    rumbleDrive.oversample = "4x";
+    const rumbleLowPass = context.createBiquadFilter();
+    rumbleLowPass.type = "lowpass";
+    rumbleLowPass.frequency.value = AUDIO_METRICS.rumble.lowPassHz;
+    const rumbleHighPass = context.createBiquadFilter();
+    rumbleHighPass.type = "highpass";
+    rumbleHighPass.frequency.value = AUDIO_METRICS.rumble.highPassHz;
+    this.rumbleBus
+      .connect(rumbleSpace)
+      .connect(rumbleDrive)
+      .connect(rumbleLowPass)
+      .connect(rumbleHighPass)
+      .connect(this.rumbleDuck)
+      .connect(this.rumbleReturn)
+      .connect(this.toneFilter);
 
     for (const kind of LAYER_KINDS) {
       const layerGain = context.createGain();
@@ -141,7 +173,11 @@ export class AudioEngine implements NoteSink {
       AUDIO_METRICS.toneFilterMinHz *
       Math.pow(AUDIO_METRICS.toneFilterRatio, settings.brightness);
     this.toneFilter.frequency.setTargetAtTime(
-      Math.min(cutoff, this.context.sampleRate / 2 - 200),
+      Math.min(
+        cutoff,
+        style.space.toneCeilingHz,
+        this.context.sampleRate / 2 - 200,
+      ),
       now,
       constant,
     );
@@ -187,6 +223,23 @@ export class AudioEngine implements NoteSink {
     );
     this.voiceEnds.push(end);
 
+    if (event.voice === "kick" && this.rumbleAmount > 0) {
+      VOICES.kick(
+        { ...this.rig, destination: this.rumbleBus },
+        {
+          startTime: time,
+          duration: durationSeconds,
+          frequency: 0,
+          velocity: event.velocity,
+          brightness: this.brightness,
+        },
+      );
+      this.rumbleDuck.gain.setValueAtTime(0, time);
+      this.rumbleDuck.gain.linearRampToValueAtTime(
+        1,
+        time + AUDIO_METRICS.rumble.duckRelease,
+      );
+    }
     if (this.ducking && event.voice === "kick") this.duck(time);
   }
 
@@ -211,6 +264,8 @@ export class AudioEngine implements NoteSink {
       now,
       constant,
     );
+    this.rumbleAmount = space.rumble;
+    this.rumbleReturn.gain.setTargetAtTime(space.rumble, now, constant);
     for (const kind of LAYER_KINDS)
       this.delaySends[kind].gain.setTargetAtTime(
         space.delaySends[kind],

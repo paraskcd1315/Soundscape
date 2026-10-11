@@ -10,4 +10,8 @@ export interface SeedTimbre {
   stabSteps: readonly number[];
   drumKit: readonly DrumGrid[];
   chordCenterShift: number;
+  melodyShift: number;
+  melodyBusy: number;
+  leapBias: number;
+  syncopation: number;
 }

@@ -15,11 +15,19 @@ export const AUDIO_METRICS = {
   duckAttack: 0.01,
   duckRelease: 0.22,
   compressor: {
-    threshold: -14,
-    knee: 12,
-    ratio: 4,
-    attack: 0.004,
+    threshold: -16,
+    knee: 10,
+    ratio: 3,
+    attack: 0.015,
     release: 0.2,
+  },
+  rumble: {
+    reverbSeconds: 3.5,
+    reverbDecay: 3,
+    drive: 6,
+    lowPassHz: 115,
+    highPassHz: 32,
+    duckRelease: 0.22,
   },
   saturationDrive: 1.6,
   layerReverbSend: {

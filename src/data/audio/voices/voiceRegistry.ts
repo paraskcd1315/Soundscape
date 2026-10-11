@@ -20,6 +20,9 @@ import { uprightVoice } from "./uprightVoice";
 import { acidVoice } from "./acidVoice";
 import { brushVoice } from "./brushVoice";
 import { choirVoice } from "./choirVoice";
+import { hornVoice } from "./hornVoice";
+import { muteTrumpetVoice } from "./muteTrumpetVoice";
+import { pianoVoice } from "./pianoVoice";
 import { kalimbaVoice } from "./kalimbaVoice";
 import { organVoice } from "./organVoice";
 import { rhodesVoice } from "./rhodesVoice";
@@ -60,4 +63,7 @@ export const VOICES: Record<VoiceId, VoiceRenderer> = {
   brush: brushVoice,
   acid: acidVoice,
   choir: choirVoice,
+  piano: pianoVoice,
+  horn: hornVoice,
+  muteTrumpet: muteTrumpetVoice,
 };
