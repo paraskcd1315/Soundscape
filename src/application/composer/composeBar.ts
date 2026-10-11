@@ -9,6 +9,7 @@ import { composeChords } from "./composeChords";
 import { composeCounter } from "./composeCounter";
 import { composeDrums } from "./composeDrums";
 import { composePad } from "./composePad";
+import { patternsFor } from "./patterns/patternsFor";
 import { timbreFor } from "./timbreFor";
 import { composeMelody } from "./composeMelody";
 import { composeTexture } from "./composeTexture";
@@ -26,11 +27,13 @@ export function composeBar(settings: Settings, barIndex: number): NoteEvent[] {
     style.swingRange.max,
   );
 
+  const timbre = timbreFor(settings, style);
   const context: BarContext = {
     settings,
     style,
     scale,
-    timbre: timbreFor(settings, style),
+    timbre,
+    patterns: patternsFor(settings, style, timbre, barIndex),
     barIndex,
     section: Math.floor(barIndex / COMPOSER_METRICS.sectionBars),
     harmony: harmonyAt(settings, style, scale, barIndex),

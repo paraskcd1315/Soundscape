@@ -10,12 +10,7 @@ export function composeBass(context: BarContext): NoteEvent[] {
   const recipe = context.style.bass;
   if (context.energy < recipe.minimumEnergy) return [];
 
-  const patternRng = createRng(
-    context.settings.seed,
-    "bassPattern",
-    context.section,
-  );
-  const pattern = patternRng.pick(recipe.patterns);
+  const pattern = context.patterns.bass;
   const rng = createRng(context.settings.seed, "bass", context.barIndex);
   const densityScale = 0.6 + context.settings.density * 0.8;
   const energyScale = 0.7 + 0.3 * context.energy;

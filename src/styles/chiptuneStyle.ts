@@ -1,5 +1,6 @@
 import type { BassStep } from "../domain/model/BassStep";
 import type { StyleDefinition } from "../domain/model/StyleDefinition";
+import { chiptunePatterns } from "./patterns/chiptunePatterns";
 
 const WALKING_EIGHTHS: BassStep[] = [
   { step: 0, interval: "root", lengthSteps: 2, weight: 1 },
@@ -118,6 +119,7 @@ export const chiptuneStyle: StyleDefinition = {
     chordCenterShifts: [-2, 0, 2],
     drumKits: [],
   },
+  patterns: chiptunePatterns,
   palette: {
     backgroundTop: "#04140a",
     backgroundBottom: "#0a3a3a",

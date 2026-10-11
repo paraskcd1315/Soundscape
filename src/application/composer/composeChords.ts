@@ -44,7 +44,7 @@ export function composeChords(context: BarContext): NoteEvent[] {
     const keep = 0.65 + 0.35 * context.settings.density;
     const strum =
       context.timbre.chordVoice === "stab" ? 0 : COMPOSER_METRICS.strumBeats;
-    context.timbre.stabSteps.forEach((step, stabIndex) => {
+    context.patterns.stabSteps.forEach((step, stabIndex) => {
       if (stabIndex > 0 && !rng.chance(keep)) return;
       harmony.voicing.forEach((midi, index) => {
         events.push({

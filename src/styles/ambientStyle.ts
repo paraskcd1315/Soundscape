@@ -1,4 +1,5 @@
 import type { StyleDefinition } from "../domain/model/StyleDefinition";
+import { ambientPatterns } from "./patterns/ambientPatterns";
 
 export const ambientStyle: StyleDefinition = {
   id: "ambient",
@@ -89,6 +90,7 @@ export const ambientStyle: StyleDefinition = {
     chordCenterShifts: [-3, 0, 3],
     drumKits: [],
   },
+  patterns: ambientPatterns,
   palette: {
     backgroundTop: "#04101f",
     backgroundBottom: "#0b3a46",

@@ -1,5 +1,6 @@
 import type { BassStep } from "../domain/model/BassStep";
 import type { StyleDefinition } from "../domain/model/StyleDefinition";
+import { technoPatterns } from "./patterns/technoPatterns";
 
 const OFFBEAT_PATTERN: BassStep[] = [2, 6, 10, 14].map((step) => ({
   step,
@@ -128,6 +129,7 @@ export const technoStyle: StyleDefinition = {
     chordCenterShifts: [-2, 0, 2],
     drumKits: [],
   },
+  patterns: technoPatterns,
   palette: {
     backgroundTop: "#0d0418",
     backgroundBottom: "#35104f",

@@ -3,6 +3,7 @@ import type { ChordRecipe } from "./ChordRecipe";
 import type { DrumRecipe } from "./DrumRecipe";
 import type { MelodyRecipe } from "./MelodyRecipe";
 import type { NumericRange } from "./NumericRange";
+import type { PatternRules } from "./PatternRules";
 import type { Progression } from "./Progression";
 import type { ScaleId } from "./ScaleId";
 import type { StyleId } from "./StyleId";
@@ -33,5 +34,6 @@ export interface StyleDefinition {
   counter: CounterRecipe | null;
   texture: TextureRecipe;
   variants: StyleVariants;
+  patterns: PatternRules;
   palette: StylePalette;
 }

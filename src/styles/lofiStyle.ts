@@ -1,4 +1,5 @@
 import type { StyleDefinition } from "../domain/model/StyleDefinition";
+import { lofiPatterns } from "./patterns/lofiPatterns";
 
 export const lofiStyle: StyleDefinition = {
   id: "lofi",
@@ -240,6 +241,7 @@ export const lofiStyle: StyleDefinition = {
       ],
     ],
   },
+  patterns: lofiPatterns,
   palette: {
     backgroundTop: "#1b0f12",
     backgroundBottom: "#4a2230",

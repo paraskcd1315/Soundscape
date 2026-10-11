@@ -1,4 +1,5 @@
 import type { StyleDefinition } from "../domain/model/StyleDefinition";
+import { jazzPatterns } from "./patterns/jazzPatterns";
 
 export const jazzStyle: StyleDefinition = {
   id: "jazz",
@@ -236,6 +237,7 @@ export const jazzStyle: StyleDefinition = {
       ],
     ],
   },
+  patterns: jazzPatterns,
   palette: {
     backgroundTop: "#1a1004",
     backgroundBottom: "#4a1220",
