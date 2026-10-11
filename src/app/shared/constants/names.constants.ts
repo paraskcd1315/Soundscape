@@ -21,6 +21,7 @@ export const SCALE_NAMES: Readonly<Record<ScaleId, string>> = {
   mixolydian: "Mixolydian",
   majorPentatonic: "Major pentatonic",
   minorPentatonic: "Minor pentatonic",
+  harmonicMinor: "Harmonic minor",
 };
 
 export const LAYER_NAMES: Readonly<Record<LayerKind, string>> = {

@@ -9,6 +9,8 @@ export const DRUM_VOICE_IDS = [
   "shaker",
   "rim",
   "brush",
+  "tom",
+  "gatedSnare",
 ] as const;
 
 export const TONAL_VOICE_IDS = [
@@ -33,6 +35,17 @@ export const TONAL_VOICE_IDS = [
   "horn",
   "muteTrumpet",
   "feltPiano",
+  "supersaw",
+  "pluck",
+  "reese",
+  "dubChord",
+  "marimba",
+  "steelDrum",
+  "brass",
+  "junoPad",
+  "vocalChop",
+  "flute",
+  "nylonGuitar",
 ] as const;
 
 export const TEXTURE_VOICE_IDS = ["swell", "crackle"] as const;

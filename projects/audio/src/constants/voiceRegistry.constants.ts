@@ -24,6 +24,19 @@ import { hornVoice } from "../services/voices/hornVoice";
 import { muteTrumpetVoice } from "../services/voices/muteTrumpetVoice";
 import { pianoVoice } from "../services/voices/pianoVoice";
 import { feltPianoVoice } from "../services/voices/feltPianoVoice";
+import { supersawVoice } from "../services/voices/supersawVoice";
+import { pluckVoice } from "../services/voices/pluckVoice";
+import { reeseVoice } from "../services/voices/reeseVoice";
+import { dubChordVoice } from "../services/voices/dubChordVoice";
+import { marimbaVoice } from "../services/voices/marimbaVoice";
+import { steelDrumVoice } from "../services/voices/steelDrumVoice";
+import { brassVoice } from "../services/voices/brassVoice";
+import { junoPadVoice } from "../services/voices/junoPadVoice";
+import { vocalChopVoice } from "../services/voices/vocalChopVoice";
+import { fluteVoice } from "../services/voices/fluteVoice";
+import { nylonGuitarVoice } from "../services/voices/nylonGuitarVoice";
+import { tomVoice } from "../services/voices/tomVoice";
+import { gatedSnareVoice } from "../services/voices/gatedSnareVoice";
 import { kalimbaVoice } from "../services/voices/kalimbaVoice";
 import { organVoice } from "../services/voices/organVoice";
 import { rhodesVoice } from "../services/voices/rhodesVoice";
@@ -68,4 +81,17 @@ export const VOICES: Record<VoiceId, VoiceRenderer> = {
   horn: hornVoice,
   muteTrumpet: muteTrumpetVoice,
   feltPiano: feltPianoVoice,
+  supersaw: supersawVoice,
+  pluck: pluckVoice,
+  reese: reeseVoice,
+  dubChord: dubChordVoice,
+  marimba: marimbaVoice,
+  steelDrum: steelDrumVoice,
+  brass: brassVoice,
+  junoPad: junoPadVoice,
+  vocalChop: vocalChopVoice,
+  flute: fluteVoice,
+  nylonGuitar: nylonGuitarVoice,
+  tom: tomVoice,
+  gatedSnare: gatedSnareVoice,
 };
