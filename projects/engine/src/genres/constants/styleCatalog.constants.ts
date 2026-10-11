@@ -10,6 +10,13 @@ import { melodicProgressiveStyle } from "./styles/melodicProgressiveStyle";
 import { progressiveStyle } from "./styles/progressiveStyle";
 import { technoStyle } from "./styles/technoStyle";
 import { tranceStyle } from "./styles/tranceStyle";
+import { deepHouseStyle } from "./styles/deepHouseStyle";
+import { deepProgressiveHouseStyle } from "./styles/deepProgressiveHouseStyle";
+import { chillHouseStyle } from "./styles/chillHouseStyle";
+import { techHouseStyle } from "./styles/techHouseStyle";
+import { melodicHouseTechnoStyle } from "./styles/melodicHouseTechnoStyle";
+import { deepMelodicTechnoStyle } from "./styles/deepMelodicTechnoStyle";
+import { dubTechnoStyle } from "./styles/dubTechnoStyle";
 
 export const STYLES: Record<StyleId, StyleDefinition> = {
   ambient: ambientStyle,
@@ -22,4 +29,11 @@ export const STYLES: Record<StyleId, StyleDefinition> = {
   deepProgressiveTrance: deepProgressiveTranceStyle,
   progressive: progressiveStyle,
   melodicProgressive: melodicProgressiveStyle,
+  deepHouse: deepHouseStyle,
+  deepProgressiveHouse: deepProgressiveHouseStyle,
+  chillHouse: chillHouseStyle,
+  techHouse: techHouseStyle,
+  melodicHouseTechno: melodicHouseTechnoStyle,
+  deepMelodicTechno: deepMelodicTechnoStyle,
+  dubTechno: dubTechnoStyle,
 };

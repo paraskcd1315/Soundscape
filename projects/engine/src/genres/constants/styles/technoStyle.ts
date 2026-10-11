@@ -22,8 +22,8 @@ const ROLLING_PATTERN: BassStep[] = [2, 3, 6, 7, 10, 11, 14].map(
 
 export const technoStyle: StyleDefinition = {
   id: "techno",
-  tempoRange: { min: 120, max: 140 },
-  defaultTempo: 128,
+  tempoRange: { min: 124, max: 140 },
+  defaultTempo: 130,
   swingRange: { min: 0, max: 0.2 },
   defaultSwing: 0,
   humanizeScale: 0.5,

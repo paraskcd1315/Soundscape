@@ -9,4 +9,11 @@ export const STYLE_IDS = [
   "deepProgressiveTrance",
   "progressive",
   "melodicProgressive",
+  "deepHouse",
+  "deepProgressiveHouse",
+  "chillHouse",
+  "techHouse",
+  "melodicHouseTechno",
+  "deepMelodicTechno",
+  "dubTechno",
 ] as const;

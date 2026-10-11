@@ -15,6 +15,13 @@ export const STYLE_NAMES: Readonly<Record<StyleId, string>> = {
   deepProgressiveTrance: "Deep Progressive Trance",
   progressive: "Progressive",
   melodicProgressive: "Melodic Progressive",
+  deepHouse: "Deep House",
+  deepProgressiveHouse: "Deep Progressive House",
+  chillHouse: "Chill & Tropical House",
+  techHouse: "Tech House",
+  melodicHouseTechno: "Melodic House & Techno",
+  deepMelodicTechno: "Deep Melodic Techno",
+  dubTechno: "Dub Techno",
 };
 
 export const SCALE_NAMES: Readonly<Record<ScaleId, string>> = {
