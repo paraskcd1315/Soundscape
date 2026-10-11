@@ -6,5 +6,10 @@ export const SUPERSAW_METRICS = {
   cutoffBrightnessHz: 5200,
   resonance: 0.6,
   highPassHz: 180,
-  detuneCents: [-32, -21, -10, 0, 10, 21, 32],
+  detuneCents: [-28, -18, -9, 0, 9, 18, 28],
+  spread: 0.8,
+  settleRatio: 0.55,
+  settleSeconds: 0.25,
+  noiseHighPassHz: 5000,
+  noiseGain: 0.05,
 } as const;

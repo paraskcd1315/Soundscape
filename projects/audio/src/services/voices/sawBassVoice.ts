@@ -1,31 +1,42 @@
 import { sustainEnvelope } from "../../utils/envelopes.util";
 import type { VoiceRenderer } from "../../types/VoiceRenderer";
-import { createFilter, createGain, createOscillator } from "../../utils/voiceNodes.util";
-import { SWEEP_SECONDS, FLOOR_HZ } from "./constants/sawBassVoice.constants";
+import {
+  createFilter,
+  createGain,
+  createOscillator,
+} from "../../utils/voiceNodes.util";
+import { createSaturationCurve } from "../../utils/createSaturationCurve";
+import { SAW_BASS_METRICS } from "./constants/sawBassVoice.constants";
 
 export const sawBassVoice: VoiceRenderer = (rig, spec) => {
+  const metrics = SAW_BASS_METRICS;
   const output = createGain(rig, 0);
-  const filter = createFilter(rig, "lowpass", 300 + spec.brightness * 2500, 6);
   const end = sustainEnvelope(
     output.gain,
     spec.startTime,
     spec.duration,
-    0.2 * spec.velocity,
-    0.005,
-    0.06,
+    metrics.peak * spec.velocity,
+    metrics.attackSeconds,
+    metrics.releaseSeconds,
   );
-  filter.frequency.setValueAtTime(300 + spec.brightness * 2500, spec.startTime);
-  filter.frequency.exponentialRampToValueAtTime(
-    FLOOR_HZ,
-    spec.startTime + SWEEP_SECONDS,
+  const open = metrics.openBaseHz + spec.brightness * metrics.openBrightnessHz;
+  const lowPass = createFilter(rig, "lowpass", open, metrics.resonance);
+  lowPass.frequency.setValueAtTime(open, spec.startTime);
+  lowPass.frequency.exponentialRampToValueAtTime(
+    metrics.floorHz,
+    spec.startTime + metrics.sweepSeconds,
   );
-  createOscillator(
-    rig,
-    "sawtooth",
-    spec.frequency,
-    spec.startTime,
-    end,
-  ).connect(filter);
-  filter.connect(output).connect(rig.destination);
+  const shaper = rig.context.createWaveShaper();
+  shaper.curve = createSaturationCurve(metrics.drive);
+  createOscillator(rig, "sawtooth", spec.frequency, spec.startTime, end)
+    .connect(createFilter(rig, "highpass", metrics.splitHz))
+    .connect(lowPass)
+    .connect(shaper)
+    .connect(createGain(rig, metrics.midGain))
+    .connect(output);
+  createOscillator(rig, "sine", spec.frequency, spec.startTime, end)
+    .connect(createGain(rig, metrics.subGain))
+    .connect(output);
+  output.connect(rig.destination);
   return end;
 };

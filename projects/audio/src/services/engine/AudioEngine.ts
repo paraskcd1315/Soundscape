@@ -14,6 +14,7 @@ import { createImpulseResponse } from "../../utils/createImpulseResponse";
 import { createNoiseBuffer } from "../../utils/createNoiseBuffer";
 import { createSaturationCurve } from "../../utils/createSaturationCurve";
 import { playSample } from "../../utils/playSample.util";
+import { createMasterChain } from "../../utils/createMasterChain.util";
 import { isDrumVoice } from "../../utils/isDrumVoice.util";
 import type { VoiceSpec } from "../../types/VoiceSpec";
 import type { VoiceId } from "@soundscape/engine/models/VoiceId";
@@ -73,23 +74,28 @@ export class AudioEngine implements NoteSink {
     this.shaper.curve = this.curveFor(AUDIO_METRICS.saturationDrive);
     this.shaper.oversample = "4x";
 
-    const compressor = context.createDynamicsCompressor();
-    compressor.threshold.value = AUDIO_METRICS.compressor.threshold;
-    compressor.knee.value = AUDIO_METRICS.compressor.knee;
-    compressor.ratio.value = AUDIO_METRICS.compressor.ratio;
-    compressor.attack.value = AUDIO_METRICS.compressor.attack;
-    compressor.release.value = AUDIO_METRICS.compressor.release;
+    const master = createMasterChain(context);
 
     this.toneFilter
       .connect(wobbleDelay)
       .connect(this.shaper)
-      .connect(compressor)
-      .connect(this.masterGain);
+      .connect(master.input);
+    master.output.connect(this.masterGain);
     this.masterGain.connect(output);
 
     this.reverbBus = context.createGain();
     this.reverbReturn = context.createGain();
-    this.reverbReturn.connect(this.toneFilter);
+    const returnHighPass = context.createBiquadFilter();
+    returnHighPass.type = "highpass";
+    returnHighPass.frequency.value =
+      AUDIO_METRICS.reverbReturnFilter.highPassHz;
+    const returnLowPass = context.createBiquadFilter();
+    returnLowPass.type = "lowpass";
+    returnLowPass.frequency.value = AUDIO_METRICS.reverbReturnFilter.lowPassHz;
+    this.reverbReturn
+      .connect(returnHighPass)
+      .connect(returnLowPass)
+      .connect(this.toneFilter);
 
     const delayBus = context.createGain();
     this.delayNode = context.createDelay(AUDIO_METRICS.delayMaxSeconds);
