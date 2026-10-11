@@ -23,6 +23,11 @@ import { downtempoLoungeStyle } from "./styles/downtempoLoungeStyle";
 import { lofiLoungeStyle } from "./styles/lofiLoungeStyle";
 import { smoothLofiStyle } from "./styles/smoothLofiStyle";
 import { futureChillStyle } from "./styles/futureChillStyle";
+import { spaceDreamsStyle } from "./styles/spaceDreamsStyle";
+import { dreamlandWavesStyle } from "./styles/dreamlandWavesStyle";
+import { retroWaveStyle } from "./styles/retroWaveStyle";
+import { cyberpunkStyle } from "./styles/cyberpunkStyle";
+import { edmStyle } from "./styles/edmStyle";
 
 export const STYLES: Record<StyleId, StyleDefinition> = {
   ambient: ambientStyle,
@@ -48,4 +53,9 @@ export const STYLES: Record<StyleId, StyleDefinition> = {
   lofiLounge: lofiLoungeStyle,
   smoothLofi: smoothLofiStyle,
   futureChill: futureChillStyle,
+  spaceDreams: spaceDreamsStyle,
+  dreamlandWaves: dreamlandWavesStyle,
+  retroWave: retroWaveStyle,
+  cyberpunk: cyberpunkStyle,
+  edm: edmStyle,
 };

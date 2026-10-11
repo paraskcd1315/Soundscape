@@ -28,6 +28,11 @@ export const STYLE_NAMES: Readonly<Record<StyleId, string>> = {
   lofiLounge: "Lo-fi Lounge & Chill",
   smoothLofi: "Smooth Lo-fi Beats",
   futureChill: "Future Chill",
+  spaceDreams: "Space Dreams",
+  dreamlandWaves: "Dreamland Waves",
+  retroWave: "Retro Wave",
+  cyberpunk: "Cyberpunk",
+  edm: "EDM",
 };
 
 export const SCALE_NAMES: Readonly<Record<ScaleId, string>> = {

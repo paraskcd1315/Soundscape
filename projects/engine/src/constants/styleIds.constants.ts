@@ -22,4 +22,9 @@ export const STYLE_IDS = [
   "lofiLounge",
   "smoothLofi",
   "futureChill",
+  "spaceDreams",
+  "dreamlandWaves",
+  "retroWave",
+  "cyberpunk",
+  "edm",
 ] as const;
