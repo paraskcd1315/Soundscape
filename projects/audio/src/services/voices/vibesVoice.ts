@@ -1,7 +1,14 @@
 import { pluckEnvelope } from "../../utils/envelopes.util";
 import type { VoiceRenderer } from "../../types/VoiceRenderer";
 import { createGain, createOscillator } from "../../utils/voiceNodes.util";
-import { OVERTONE_RATIO, OVERTONE_LIMIT_HZ, TREMOLO_HZ, TREMOLO_DEPTH, DECAY_SECONDS } from "./constants/vibesVoice.constants";
+import { strikeFilter } from "../../utils/strikeFilter.util";
+import {
+  OVERTONE_RATIO,
+  OVERTONE_LIMIT_HZ,
+  TREMOLO_HZ,
+  TREMOLO_DEPTH,
+  DECAY_SECONDS,
+} from "./constants/vibesVoice.constants";
 
 export const vibesVoice: VoiceRenderer = (rig, spec) => {
   const tremolo = createGain(rig, 1 - TREMOLO_DEPTH);
@@ -38,6 +45,9 @@ export const vibesVoice: VoiceRenderer = (rig, spec) => {
       .connect(overtone)
       .connect(output);
   }
-  output.connect(tremolo).connect(rig.destination);
+  output
+    .connect(strikeFilter(rig, spec))
+    .connect(tremolo)
+    .connect(rig.destination);
   return end;
 };

@@ -23,6 +23,7 @@ import { choirVoice } from "../services/voices/choirVoice";
 import { hornVoice } from "../services/voices/hornVoice";
 import { muteTrumpetVoice } from "../services/voices/muteTrumpetVoice";
 import { pianoVoice } from "../services/voices/pianoVoice";
+import { feltPianoVoice } from "../services/voices/feltPianoVoice";
 import { kalimbaVoice } from "../services/voices/kalimbaVoice";
 import { organVoice } from "../services/voices/organVoice";
 import { rhodesVoice } from "../services/voices/rhodesVoice";
@@ -66,4 +67,5 @@ export const VOICES: Record<VoiceId, VoiceRenderer> = {
   piano: pianoVoice,
   horn: hornVoice,
   muteTrumpet: muteTrumpetVoice,
+  feltPiano: feltPianoVoice,
 };

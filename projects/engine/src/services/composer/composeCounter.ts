@@ -28,7 +28,8 @@ export function composeCounter(
 
   const count = rng.int(1, complexity > 0.6 ? 3 : 2);
   const available = [...recipe.steps];
-  const energyScale = 0.7 + 0.3 * context.energy;
+  const energyScale =
+    (0.7 + 0.3 * context.energy) * (recipe.velocityScale ?? 1);
   const avoid = avoidPitchClasses(context.harmony.pitchClasses);
   const events: NoteEvent[] = [];
 

@@ -36,7 +36,8 @@ export function composeMelody(context: BarContext): NoteEvent[] {
     context.settings.complexity,
   );
   const keepProbability = 0.6 + 0.4 * context.settings.density;
-  const energyScale = 0.7 + 0.3 * context.energy;
+  const energyScale =
+    (0.7 + 0.3 * context.energy) * (recipe.velocityScale ?? 1);
   const avoid = avoidPitchClasses(context.harmony.pitchClasses);
   const events: NoteEvent[] = [];
 

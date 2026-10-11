@@ -32,6 +32,7 @@ export const TONAL_VOICE_IDS = [
   "piano",
   "horn",
   "muteTrumpet",
+  "feltPiano",
 ] as const;
 
 export const TEXTURE_VOICE_IDS = ["swell", "crackle"] as const;

@@ -12,4 +12,5 @@ export interface MelodyRecipe {
   stepBias: number;
   minimumEnergy: number;
   chromaticChance?: number;
+  velocityScale?: number;
 }

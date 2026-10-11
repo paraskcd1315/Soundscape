@@ -1,6 +1,7 @@
 import { pluckEnvelope } from "../../utils/envelopes.util";
 import type { VoiceRenderer } from "../../types/VoiceRenderer";
 import { createGain, createOscillator } from "../../utils/voiceNodes.util";
+import { strikeFilter } from "../../utils/strikeFilter.util";
 import { TINE_RATIO, TINE_LIMIT_HZ } from "./constants/kalimbaVoice.constants";
 
 export const kalimbaVoice: VoiceRenderer = (rig, spec) => {
@@ -28,6 +29,6 @@ export const kalimbaVoice: VoiceRenderer = (rig, spec) => {
       .connect(tine)
       .connect(output);
   }
-  output.connect(rig.destination);
+  output.connect(strikeFilter(rig, spec)).connect(rig.destination);
   return end;
 };

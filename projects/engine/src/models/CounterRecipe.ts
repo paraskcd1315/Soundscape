@@ -8,4 +8,5 @@ export interface CounterRecipe {
   steps: readonly number[];
   lengthSteps: readonly number[];
   minimumEnergy: number;
+  velocityScale?: number;
 }
