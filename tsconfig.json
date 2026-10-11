@@ -4,7 +4,7 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "types": ["vite/client"],
+    "types": ["vite/client", "node"],
     "strict": true,
     "noEmit": true,
     "skipLibCheck": true,
@@ -12,7 +12,14 @@
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@soundscape/engine/*": ["./projects/engine/src/*"],
+      "@soundscape/audio/*": ["./projects/audio/src/*"],
+      "@soundscape/visualizer/*": ["./projects/visualizer/src/*"],
+      "@soundscape/design-system/*": ["./projects/design-system/src/*"],
+      "@app/*": ["./src/app/*"]
+    }
   },
-  "include": ["src", "tests", "vite.config.ts"]
+  "include": ["src", "projects", "vite.config.ts"]
 }

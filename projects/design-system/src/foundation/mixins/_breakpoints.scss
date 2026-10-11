@@ -1,0 +1,20 @@
+$ss-breakpoint-compact: 640px;
+$ss-breakpoint-medium: 900px;
+
+@mixin compact {
+  @media (max-width: $ss-breakpoint-compact) {
+    @content;
+  }
+}
+
+@mixin below-medium {
+  @media (max-width: $ss-breakpoint-medium) {
+    @content;
+  }
+}
+
+@mixin medium-up {
+  @media (min-width: ($ss-breakpoint-medium + 1px)) {
+    @content;
+  }
+}

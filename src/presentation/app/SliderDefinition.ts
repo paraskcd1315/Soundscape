@@ -1,4 +1,4 @@
-import type { Settings } from "../../domain/model/Settings";
+import type { Settings } from "@soundscape/engine/models/Settings";
 import type { StringKey } from "../i18n/en";
 
 export type NumericSettingKey =

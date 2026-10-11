@@ -1,7 +1,7 @@
-import type { SettingsStore } from "../../application/settings/SettingsStore";
-import { LAYER_KINDS } from "../../domain/model/LayerKind";
-import type { Settings } from "../../domain/model/Settings";
-import { STYLES } from "../../styles/styleCatalog";
+import type { SettingsStore } from "@soundscape/engine/services/settings/SettingsStore";
+import { LAYER_KINDS } from "@soundscape/engine/constants/layerKinds.constants";
+import type { Settings } from "@soundscape/engine/models/Settings";
+import { STYLES } from "@soundscape/engine/genres/constants/styleCatalog.constants";
 import { createSelect } from "../controls/createSelect";
 import { createSlider } from "../controls/createSlider";
 import { el } from "../controls/dom";

@@ -1,0 +1,37 @@
+export const DRUM_VOICE_IDS = [
+  "kick",
+  "snare",
+  "clap",
+  "hat",
+  "openHat",
+  "ride",
+  "perc",
+  "shaker",
+  "rim",
+  "brush",
+] as const;
+
+export const TONAL_VOICE_IDS = [
+  "pad",
+  "epiano",
+  "bell",
+  "subBass",
+  "sawBass",
+  "stab",
+  "pulse",
+  "triangle",
+  "upright",
+  "rhodes",
+  "vibes",
+  "organ",
+  "strings",
+  "kalimba",
+  "softLead",
+  "acid",
+  "choir",
+  "piano",
+  "horn",
+  "muteTrumpet",
+] as const;
+
+export const TEXTURE_VOICE_IDS = ["swell", "crackle"] as const;

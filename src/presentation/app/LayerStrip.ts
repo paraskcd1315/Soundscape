@@ -1,5 +1,5 @@
-import type { LayerKind } from "../../domain/model/LayerKind";
-import type { LayerMix } from "../../domain/model/LayerMix";
+import type { LayerKind } from "@soundscape/engine/models/LayerKind";
+import type { LayerMix } from "@soundscape/engine/models/LayerMix";
 import { createSlider } from "../controls/createSlider";
 import { el } from "../controls/dom";
 import type { SliderControl } from "../controls/SliderControl";

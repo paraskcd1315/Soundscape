@@ -1,20 +1,20 @@
-import { PresetService } from "../../application/presets/PresetService";
-import { defaultSettingsFor } from "../../application/settings/defaultSettingsFor";
-import { SettingsStore } from "../../application/settings/SettingsStore";
+import { PresetService } from "@soundscape/engine/services/presets/PresetService";
+import { defaultSettingsFor } from "@soundscape/engine/services/settings/defaultSettingsFor";
+import { SettingsStore } from "@soundscape/engine/services/settings/SettingsStore";
 import {
   randomSeed,
   surpriseSettings,
-} from "../../application/settings/surpriseSettings";
-import { Player } from "../../data/audio/Player";
-import { decodeShare, encodeShare } from "../../data/share/ShareCodec";
-import { LocalPresetRepository } from "../../data/storage/LocalPresetRepository";
-import { SafeStorage } from "../../data/storage/SafeStorage";
-import { SessionRepository } from "../../data/storage/SessionRepository";
-import { STYLE_IDS } from "../../domain/model/StyleId";
-import type { Preset } from "../../domain/model/Preset";
-import type { Settings } from "../../domain/model/Settings";
-import { VISUALIZER_MODE_IDS } from "../../domain/model/VisualizerModeId";
-import { STYLES } from "../../styles/styleCatalog";
+} from "@soundscape/engine/services/settings/surpriseSettings";
+import { Player } from "@soundscape/audio/services/player/Player";
+import { decodeShare, encodeShare } from "../../app/core/services/share/ShareCodec";
+import { LocalPresetRepository } from "../../app/core/services/storage/LocalPresetRepository";
+import { SafeStorage } from "../../app/core/services/storage/SafeStorage";
+import { SessionRepository } from "../../app/core/services/storage/SessionRepository";
+import { STYLE_IDS } from "@soundscape/engine/constants/styleIds.constants";
+import type { Preset } from "@soundscape/engine/models/Preset";
+import type { Settings } from "@soundscape/engine/models/Settings";
+import { VISUALIZER_MODE_IDS } from "@soundscape/engine/constants/visualizerModeIds.constants";
+import { STYLES } from "@soundscape/engine/genres/constants/styleCatalog.constants";
 import { createButton } from "../controls/createButton";
 import { createNameDialog } from "../controls/createNameDialog";
 import { createSelect } from "../controls/createSelect";
@@ -23,7 +23,7 @@ import { createToast } from "../controls/createToast";
 import { el } from "../controls/dom";
 import { STYLE_NAMES, VISUALIZER_MODE_NAMES } from "../i18n/names";
 import { t } from "../i18n/t";
-import { Visualizer } from "../visualizer/Visualizer";
+import { Visualizer } from "@soundscape/visualizer/services/Visualizer";
 import { downloadText } from "./downloadText";
 import { formatSliderValue } from "./formatSliderValue";
 import { seedToText, textToSeed } from "./seedText";

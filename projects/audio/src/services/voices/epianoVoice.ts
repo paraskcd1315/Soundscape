@@ -1,0 +1,40 @@
+import { pluckEnvelope } from "../../utils/envelopes.util";
+import type { VoiceRenderer } from "../../types/VoiceRenderer";
+import { createGain, createOscillator } from "../../utils/voiceNodes.util";
+import { MOD_RATIO, MOD_DECAY_SECONDS } from "./constants/epianoVoice.constants";
+
+export const epianoVoice: VoiceRenderer = (rig, spec) => {
+  const decay = Math.min(2.2, Math.max(0.5, spec.duration + 0.4));
+  const output = createGain(rig, 0);
+  const end = pluckEnvelope(
+    output.gain,
+    spec.startTime,
+    0.2 * spec.velocity,
+    0.004,
+    decay,
+  );
+  const modulatorGain = createGain(rig, 0);
+  const index = spec.frequency * (1 + 3 * spec.velocity * spec.brightness);
+  modulatorGain.gain.setValueAtTime(index, spec.startTime);
+  modulatorGain.gain.exponentialRampToValueAtTime(
+    spec.frequency * 0.05,
+    spec.startTime + MOD_DECAY_SECONDS,
+  );
+  const modulator = createOscillator(
+    rig,
+    "sine",
+    spec.frequency * MOD_RATIO,
+    spec.startTime,
+    end,
+  );
+  const carrier = createOscillator(
+    rig,
+    "sine",
+    spec.frequency,
+    spec.startTime,
+    end,
+  );
+  modulator.connect(modulatorGain).connect(carrier.frequency);
+  carrier.connect(output).connect(rig.destination);
+  return end;
+};

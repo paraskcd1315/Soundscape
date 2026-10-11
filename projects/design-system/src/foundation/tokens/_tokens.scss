@@ -1,0 +1,82 @@
+:root {
+  color-scheme: dark;
+
+  --ss-accent: #8fd3ff;
+  --ss-accent-strong: #4fa9e0;
+  --ss-accent-contrast: #06121c;
+  --ss-danger: #ff6369;
+
+  --ss-bg-base: #0b0c10;
+  --ss-surface: #16181e;
+  --ss-surface-container: #1d2027;
+  --ss-surface-container-high: #262a32;
+
+  --ss-text-primary: rgba(255, 255, 255, 0.92);
+  --ss-text-secondary: rgba(255, 255, 255, 0.6);
+  --ss-text-tertiary: rgba(255, 255, 255, 0.4);
+
+  --ss-border: rgba(255, 255, 255, 0.14);
+  --ss-border-strong: rgba(255, 255, 255, 0.24);
+  --ss-border-subtle: rgba(255, 255, 255, 0.08);
+
+  --ss-glass-bg: rgba(255, 255, 255, 0.06);
+  --ss-glass-strong-bg: color-mix(in srgb, var(--ss-surface-container-high) 72%, transparent);
+  --ss-glass-border: rgba(255, 255, 255, 0.12);
+  --ss-glass-specular: rgba(255, 255, 255, 0.16);
+  --ss-scrim: color-mix(in srgb, #000 48%, transparent);
+
+  --ss-shadow-card: 0 8px 32px rgba(0, 0, 0, 0.28);
+  --ss-shadow-float: 0 18px 48px rgba(0, 0, 0, 0.45);
+
+  --ss-space-1: 4px;
+  --ss-space-2: 8px;
+  --ss-space-3: 12px;
+  --ss-space-4: 16px;
+  --ss-space-5: 20px;
+  --ss-space-6: 24px;
+  --ss-space-7: 32px;
+  --ss-space-8: 40px;
+
+  --ss-radius-sm: 10px;
+  --ss-radius-md: 16px;
+  --ss-radius-lg: 22px;
+  --ss-radius-xl: 28px;
+  --ss-radius-pill: 999px;
+
+  --ss-font: 'Quicksand', ui-rounded, 'SF Pro Rounded', system-ui, sans-serif;
+  --ss-fs-display: 34px;
+  --ss-fs-title: 22px;
+  --ss-fs-h2: 17px;
+  --ss-fs-body: 15px;
+  --ss-fs-subhead: 13px;
+  --ss-fs-caption: 12px;
+
+  --ss-ease: cubic-bezier(0.32, 0.72, 0, 1);
+  --ss-dur-fast: 160ms;
+  --ss-dur-morph: 240ms;
+  --ss-dur-sheet: 360ms;
+
+  --ss-blur-strong: blur(30px) saturate(1.4);
+  --ss-blur-medium: blur(22px) saturate(1.6);
+  --ss-blur-soft: blur(18px) saturate(1.2);
+
+  --ss-control-height: 44px;
+  --ss-control-height-sm: 36px;
+  --ss-safe-top: env(safe-area-inset-top, 0px);
+  --ss-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --ss-safe-right: env(safe-area-inset-right, 0px);
+  --ss-safe-left: env(safe-area-inset-left, 0px);
+
+  --ss-z-stage: 0;
+  --ss-z-chrome: 50;
+  --ss-z-drawer: 100;
+  --ss-z-toast: 200;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --ss-dur-fast: 0ms;
+    --ss-dur-morph: 0ms;
+    --ss-dur-sheet: 0ms;
+  }
+}

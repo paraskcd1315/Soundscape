@@ -1,7 +1,7 @@
-import type { LayerKind } from "../../domain/model/LayerKind";
-import type { ScaleId } from "../../domain/model/ScaleId";
-import type { StyleId } from "../../domain/model/StyleId";
-import type { VisualizerModeId } from "../../domain/model/VisualizerModeId";
+import type { LayerKind } from "@soundscape/engine/models/LayerKind";
+import type { ScaleId } from "@soundscape/engine/models/ScaleId";
+import type { StyleId } from "@soundscape/engine/models/StyleId";
+import type { VisualizerModeId } from "@soundscape/engine/models/VisualizerModeId";
 
 export const STYLE_NAMES: Record<StyleId, string> = {
   ambient: "Ambient",
