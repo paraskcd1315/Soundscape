@@ -4,6 +4,7 @@ import { isIdentityChange } from "@soundscape/engine/services/settings/utils/isI
 import type { Settings } from "@soundscape/engine/models/Settings";
 import { AUDIO_METRICS } from "../../constants/audio.constants";
 import { Deck } from "./Deck";
+import { DrumSampleBank } from "../samples/DrumSampleBank";
 import {
   MAX_LEAVING_DECKS,
   MILLISECONDS_PER_SECOND,
@@ -18,6 +19,8 @@ export class Player {
   private paused: Deck | null = null;
   private readonly leaving = new Set<Deck>();
   private suspendTimer = 0;
+  private drumBank: DrumSampleBank | null = null;
+  private drumsReady: Promise<void> = Promise.resolve();
 
   constructor(private readonly store: SettingsStore) {
     store.subscribe((next, previous) => this.onSettings(next, previous));
@@ -38,7 +41,7 @@ export class Player {
   async play(): Promise<void> {
     const context = this.ensureContext();
     window.clearTimeout(this.suspendTimer);
-    await context.resume();
+    await Promise.all([context.resume(), this.drumsReady]);
     if (this.active) return;
     if (this.paused) {
       this.active = this.paused;
@@ -111,6 +114,7 @@ export class Player {
       this.bus as GainNode,
       this.timeline,
       () => this.store.get(),
+      this.drumBank as DrumSampleBank,
     );
   }
 
@@ -126,6 +130,8 @@ export class Player {
     this.context = context;
     this.bus = bus;
     this.analyserNode = analyser;
+    this.drumBank = new DrumSampleBank(context.sampleRate);
+    this.drumsReady = this.drumBank.render().catch(() => undefined);
     return context;
   }
 }

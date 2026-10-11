@@ -13,6 +13,11 @@ import { VOICES } from "../../constants/voiceRegistry.constants";
 import { createImpulseResponse } from "../../utils/createImpulseResponse";
 import { createNoiseBuffer } from "../../utils/createNoiseBuffer";
 import { createSaturationCurve } from "../../utils/createSaturationCurve";
+import { playSample } from "../../utils/playSample.util";
+import { isDrumVoice } from "../../utils/isDrumVoice.util";
+import type { VoiceSpec } from "../../types/VoiceSpec";
+import type { VoiceId } from "@soundscape/engine/models/VoiceId";
+import type { DrumSampleBank } from "../samples/DrumSampleBank";
 
 export class AudioEngine implements NoteSink {
   private readonly rig: VoiceRig;
@@ -44,6 +49,7 @@ export class AudioEngine implements NoteSink {
   constructor(
     readonly context: BaseAudioContext,
     output: AudioNode = context.destination,
+    private readonly drumBank: DrumSampleBank | null = null,
   ) {
     this.masterGain = context.createGain();
     this.toneFilter = context.createBiquadFilter();
@@ -208,29 +214,23 @@ export class AudioEngine implements NoteSink {
     const active = this.countActiveVoices(now);
     if (active >= AUDIO_METRICS.maxVoices && event.layer !== "drums") return;
 
-    const end = VOICES[event.voice](
-      { ...this.rig, destination: this.layerGains[event.layer] },
-      {
-        startTime: time,
-        duration: durationSeconds,
-        frequency: midiToFrequency(event.midi),
-        velocity: event.velocity,
-        brightness: this.brightness,
-      },
-    );
+    const end = this.play(event.voice, this.layerGains[event.layer], {
+      startTime: time,
+      duration: durationSeconds,
+      frequency: midiToFrequency(event.midi),
+      velocity: event.velocity,
+      brightness: this.brightness,
+    });
     this.voiceEnds.push(end);
 
     if (event.voice === "kick" && this.rumbleAmount > 0) {
-      VOICES.kick(
-        { ...this.rig, destination: this.rumbleBus },
-        {
-          startTime: time,
-          duration: durationSeconds,
-          frequency: 0,
-          velocity: event.velocity,
-          brightness: this.brightness,
-        },
-      );
+      this.play("kick", this.rumbleBus, {
+        startTime: time,
+        duration: durationSeconds,
+        frequency: 0,
+        velocity: event.velocity,
+        brightness: this.brightness,
+      });
       this.rumbleDuck.gain.setValueAtTime(0, time);
       this.rumbleDuck.gain.linearRampToValueAtTime(
         1,
@@ -238,6 +238,23 @@ export class AudioEngine implements NoteSink {
       );
     }
     if (this.ducking && event.voice === "kick") this.duck(time);
+  }
+
+  private play(
+    voice: VoiceId,
+    destination: AudioNode,
+    spec: VoiceSpec,
+  ): number {
+    const sample = isDrumVoice(voice) ? this.drumBank?.get(voice) : undefined;
+    if (sample)
+      return playSample(
+        this.context,
+        sample,
+        destination,
+        spec.startTime,
+        spec.velocity,
+      );
+    return VOICES[voice]({ ...this.rig, destination }, spec);
   }
 
   rampLayers(

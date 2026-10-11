@@ -4,6 +4,7 @@ import { Transport } from "@soundscape/engine/services/transport/Transport";
 import { LAYER_KINDS } from "@soundscape/engine/constants/layerKinds.constants";
 import { AudioEngine } from "../engine/AudioEngine";
 import { WorkerTicker } from "../ticker/WorkerTicker";
+import type { DrumSampleBank } from "../samples/DrumSampleBank";
 import {
   ALL_OTHER_LAYERS,
   EARLY_EXIT_LAYERS,
@@ -24,11 +25,12 @@ export class Deck {
     output: AudioNode,
     timeline: EventTimeline,
     private readonly live: () => Settings,
+    drumBank: DrumSampleBank,
   ) {
     this.fader = context.createGain();
     this.fader.gain.value = 0;
     this.fader.connect(output);
-    this.engine = new AudioEngine(context, this.fader);
+    this.engine = new AudioEngine(context, this.fader, drumBank);
     this.engine.applySettings(live());
     this.transport = new Transport({
       clock: { now: () => context.currentTime },
