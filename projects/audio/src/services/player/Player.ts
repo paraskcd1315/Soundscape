@@ -1,25 +1,33 @@
 import { EventTimeline } from "@soundscape/engine/services/transport/EventTimeline";
-import { Transport } from "@soundscape/engine/services/transport/Transport";
 import type { SettingsStore } from "@soundscape/engine/services/settings/SettingsStore";
-import { AudioEngine } from "../engine/AudioEngine";
-import { WorkerTicker } from "../ticker/WorkerTicker";
+import { isIdentityChange } from "@soundscape/engine/services/settings/utils/isIdentityChange.util";
+import type { Settings } from "@soundscape/engine/models/Settings";
+import { AUDIO_METRICS } from "../../constants/audio.constants";
+import { Deck } from "./Deck";
+import {
+  MAX_LEAVING_DECKS,
+  MILLISECONDS_PER_SECOND,
+} from "./constants/player.constants";
 
 export class Player {
   readonly timeline = new EventTimeline();
   private context: AudioContext | null = null;
-  private engine: AudioEngine | null = null;
-  private transport: Transport | null = null;
+  private bus: GainNode | null = null;
+  private analyserNode: AnalyserNode | null = null;
+  private active: Deck | null = null;
+  private readonly leaving = new Set<Deck>();
+  private suspendTimer = 0;
 
   constructor(private readonly store: SettingsStore) {
-    store.subscribe((settings) => this.engine?.applySettings(settings));
+    store.subscribe((next, previous) => this.onSettings(next, previous));
   }
 
   get isPlaying(): boolean {
-    return this.transport?.isRunning ?? false;
+    return this.active !== null;
   }
 
   analyser(): AnalyserNode | null {
-    return this.engine?.analyser ?? null;
+    return this.analyserNode;
   }
 
   currentTime(): number {
@@ -27,31 +35,81 @@ export class Player {
   }
 
   async play(): Promise<void> {
-    if (!this.context) this.build();
-    const context = this.context as AudioContext;
+    const context = this.ensureContext();
+    window.clearTimeout(this.suspendTimer);
     await context.resume();
-    const transport = this.transport as Transport;
-    if (transport.currentBar === 0 && !transport.isRunning) transport.start();
-    else transport.resume();
+    if (this.active) return;
+    this.active = this.createDeck();
+    this.active.introAt();
   }
 
   async pause(): Promise<void> {
-    this.transport?.pause();
-    await this.context?.suspend();
+    const deck = this.active;
+    if (!deck || !this.context) return;
+    this.active = null;
+    const end = this.retire(deck);
+    const context = this.context;
+    window.clearTimeout(this.suspendTimer);
+    this.suspendTimer = window.setTimeout(
+      () => {
+        if (!this.active) void context.suspend();
+      },
+      (end - context.currentTime) * MILLISECONDS_PER_SECOND,
+    );
   }
 
-  private build(): void {
+  private onSettings(next: Settings, previous: Settings): void {
+    const deck = this.active;
+    if (!deck) return;
+    if (!isIdentityChange(previous, next)) {
+      deck.applySettings(next);
+      return;
+    }
+    const startTime = deck.nextBarTime;
+    this.retire(deck);
+    this.active = this.createDeck();
+    this.active.introAt(startTime);
+  }
+
+  private retire(deck: Deck): number {
+    const end = deck.outro();
+    if (this.leaving.size >= MAX_LEAVING_DECKS) {
+      const oldest = this.leaving.values().next().value as Deck;
+      oldest.dispose();
+      this.leaving.delete(oldest);
+    }
+    this.leaving.add(deck);
+    window.setTimeout(
+      () => {
+        deck.dispose();
+        this.leaving.delete(deck);
+      },
+      (end - (this.context?.currentTime ?? 0)) * MILLISECONDS_PER_SECOND,
+    );
+    return end;
+  }
+
+  private createDeck(): Deck {
+    return new Deck(
+      this.context as AudioContext,
+      this.bus as GainNode,
+      this.timeline,
+      () => this.store.get(),
+    );
+  }
+
+  private ensureContext(): AudioContext {
+    if (this.context) return this.context;
     const context = new AudioContext({ latencyHint: "interactive" });
-    const engine = new AudioEngine(context);
-    engine.applySettings(this.store.get());
+    const bus = context.createGain();
+    const analyser = context.createAnalyser();
+    analyser.fftSize = AUDIO_METRICS.analyserFftSize;
+    analyser.smoothingTimeConstant = AUDIO_METRICS.analyserSmoothing;
+    bus.connect(context.destination);
+    bus.connect(analyser);
     this.context = context;
-    this.engine = engine;
-    this.transport = new Transport({
-      clock: { now: () => context.currentTime },
-      ticker: new WorkerTicker(),
-      sink: engine,
-      timeline: this.timeline,
-      settings: () => this.store.get(),
-    });
+    this.bus = bus;
+    this.analyserNode = analyser;
+    return context;
   }
 }

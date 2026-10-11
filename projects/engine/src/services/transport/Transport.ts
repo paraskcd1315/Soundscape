@@ -19,11 +19,17 @@ export class Transport {
     return this.nextBarIndex;
   }
 
-  start(): void {
+  get nextBarStartTime(): number {
+    return this.nextBarTime;
+  }
+
+  start(startTime?: number): void {
     if (this.running) return;
     this.running = true;
-    this.nextBarTime =
-      this.dependencies.clock.now() + TRANSPORT_METRICS.startDelaySeconds;
+    this.nextBarTime = Math.max(
+      startTime ?? 0,
+      this.dependencies.clock.now() + TRANSPORT_METRICS.startDelaySeconds,
+    );
     this.dependencies.ticker.start(() => this.tick());
     this.tick();
   }

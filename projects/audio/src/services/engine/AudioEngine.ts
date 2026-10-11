@@ -15,9 +15,9 @@ import { createNoiseBuffer } from "../../utils/createNoiseBuffer";
 import { createSaturationCurve } from "../../utils/createSaturationCurve";
 
 export class AudioEngine implements NoteSink {
-  readonly analyser: AnalyserNode;
   private readonly rig: VoiceRig;
   private readonly layerGains = {} as Record<LayerKind, GainNode>;
+  private readonly transitionGains = {} as Record<LayerKind, GainNode>;
   private readonly delaySends = {} as Record<LayerKind, GainNode>;
   private readonly duckGains: GainNode[] = [];
   private readonly toneFilter: BiquadFilterNode;
@@ -41,7 +41,10 @@ export class AudioEngine implements NoteSink {
   private ducking = false;
   private currentStyle: StyleId | null = null;
 
-  constructor(readonly context: BaseAudioContext) {
+  constructor(
+    readonly context: BaseAudioContext,
+    output: AudioNode = context.destination,
+  ) {
     this.masterGain = context.createGain();
     this.toneFilter = context.createBiquadFilter();
     this.toneFilter.type = "lowpass";
@@ -71,17 +74,12 @@ export class AudioEngine implements NoteSink {
     compressor.attack.value = AUDIO_METRICS.compressor.attack;
     compressor.release.value = AUDIO_METRICS.compressor.release;
 
-    this.analyser = context.createAnalyser();
-    this.analyser.fftSize = AUDIO_METRICS.analyserFftSize;
-    this.analyser.smoothingTimeConstant = AUDIO_METRICS.analyserSmoothing;
-
     this.toneFilter
       .connect(wobbleDelay)
       .connect(this.shaper)
       .connect(compressor)
       .connect(this.masterGain);
-    this.masterGain.connect(context.destination);
-    this.masterGain.connect(this.analyser);
+    this.masterGain.connect(output);
 
     this.reverbBus = context.createGain();
     this.reverbReturn = context.createGain();
@@ -137,7 +135,9 @@ export class AudioEngine implements NoteSink {
       delaySend.gain.value = 0;
       const panner = context.createStereoPanner();
       panner.pan.value = AUDIO_METRICS.layerPan[kind];
-      layerGain.connect(panner);
+      const transitionGain = context.createGain();
+      layerGain.connect(transitionGain).connect(panner);
+      this.transitionGains[kind] = transitionGain;
       panner.connect(send).connect(this.reverbBus);
       panner.connect(delaySend).connect(delayBus);
       if ((AUDIO_METRICS.duckedLayers as readonly LayerKind[]).includes(kind)) {
@@ -238,6 +238,29 @@ export class AudioEngine implements NoteSink {
       );
     }
     if (this.ducking && event.voice === "kick") this.duck(time);
+  }
+
+  rampLayers(
+    kinds: readonly LayerKind[],
+    target: number,
+    startTime: number,
+    seconds: number,
+  ): void {
+    for (const kind of kinds) {
+      const gain = this.transitionGains[kind].gain;
+      gain.cancelScheduledValues(startTime);
+      gain.setValueAtTime(gain.value, startTime);
+      gain.linearRampToValueAtTime(target, startTime + seconds);
+    }
+  }
+
+  setLayersSilent(kinds: readonly LayerKind[]): void {
+    for (const kind of kinds) this.transitionGains[kind].gain.value = 0;
+  }
+
+  dispose(): void {
+    this.wobbleOscillator.stop();
+    this.masterGain.disconnect();
   }
 
   private applyStyle(styleId: StyleId, now: number): void {
