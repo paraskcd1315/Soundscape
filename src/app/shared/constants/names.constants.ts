@@ -10,6 +10,11 @@ export const STYLE_NAMES: Readonly<Record<StyleId, string>> = {
   techno: "Techno",
   chiptune: "Chiptune",
   jazz: "Jazz",
+  trance: "Trance",
+  epicTrance: "Epic Trance",
+  deepProgressiveTrance: "Deep Progressive Trance",
+  progressive: "Progressive",
+  melodicProgressive: "Melodic Progressive",
 };
 
 export const SCALE_NAMES: Readonly<Record<ScaleId, string>> = {

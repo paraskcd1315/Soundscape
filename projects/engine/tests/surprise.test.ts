@@ -17,13 +17,16 @@ describe("surprise me", () => {
     expect(seen.size).toBeGreaterThanOrEqual(STYLE_IDS.length - 1);
   });
 
-  it("reaches jazz regularly", () => {
+  it("reaches every style, jazz included, about as often as the others", () => {
     let current: Settings = defaultSettingsFor("lofi");
-    let jazz = 0;
-    for (let press = 0; press < 100; press++) {
+    const presses = STYLE_IDS.length * 20;
+    const counts = new Map<string, number>();
+    for (let press = 0; press < presses; press++) {
       current = surpriseSettings(current, false);
-      if (current.styleId === "jazz") jazz++;
+      counts.set(current.styleId, (counts.get(current.styleId) ?? 0) + 1);
     }
-    expect(jazz).toBeGreaterThanOrEqual(15);
+    const fairShare = presses / STYLE_IDS.length;
+    for (const styleId of STYLE_IDS)
+      expect(counts.get(styleId) ?? 0).toBeGreaterThanOrEqual(fairShare * 0.6);
   });
 });
