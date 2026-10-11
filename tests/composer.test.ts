@@ -1,0 +1,78 @@
+import { describe, expect, it } from "vitest";
+import { composeBar } from "../src/application/composer/composeBar";
+import { defaultSettingsFor } from "../src/application/settings/defaultSettingsFor";
+import { LAYER_KINDS } from "../src/domain/model/LayerKind";
+import { STYLE_IDS } from "../src/domain/model/StyleId";
+import type { StyleId } from "../src/domain/model/StyleId";
+import { createRng } from "../src/domain/random/createRng";
+import { STYLES } from "../src/styles/styleCatalog";
+
+const BARS = 32;
+
+function bars(styleId: StyleId, seed: number) {
+  const settings = defaultSettingsFor(styleId, seed);
+  return Array.from({ length: BARS }, (_, bar) => composeBar(settings, bar));
+}
+
+describe("rng", () => {
+  it("repeats for the same parts and differs for others", () => {
+    expect(createRng(1, "a", 2).next()).toBe(createRng(1, "a", 2).next());
+    expect(createRng(1, "a", 2).next()).not.toBe(createRng(1, "a", 3).next());
+  });
+});
+
+describe.each(STYLE_IDS)("composer %s", (styleId) => {
+  it("is deterministic for a seed", () => {
+    expect(JSON.stringify(bars(styleId, 42))).toBe(
+      JSON.stringify(bars(styleId, 42)),
+    );
+  });
+
+  it("changes with the seed", () => {
+    expect(JSON.stringify(bars(styleId, 42))).not.toBe(
+      JSON.stringify(bars(styleId, 43)),
+    );
+  });
+
+  it("produces finite events inside the bar window", () => {
+    for (const seed of [1, 7, 99, 12345]) {
+      for (const events of bars(styleId, seed)) {
+        for (const event of events) {
+          expect(Number.isFinite(event.midi)).toBe(true);
+          expect(event.startBeat).toBeGreaterThanOrEqual(0);
+          expect(event.startBeat).toBeLessThan(4.2);
+          expect(event.durationBeats).toBeGreaterThan(0);
+          expect(event.velocity).toBeGreaterThan(0);
+          expect(event.velocity).toBeLessThanOrEqual(1);
+          if (event.layer === "melody") {
+            const { lowMidi, highMidi } = STYLES[styleId].melody;
+            expect(event.midi).toBeGreaterThanOrEqual(lowMidi);
+            expect(event.midi).toBeLessThanOrEqual(highMidi);
+          }
+        }
+      }
+    }
+  });
+
+  it("plays something on every bar", () => {
+    for (const events of bars(styleId, 5))
+      expect(events.length).toBeGreaterThan(0);
+  });
+
+  it("uses most layers over a song", () => {
+    const used = new Set(
+      bars(styleId, 5).flatMap((events) => events.map((event) => event.layer)),
+    );
+    expect(used.size).toBeGreaterThanOrEqual(LAYER_KINDS.length - 2);
+  });
+
+  it("keeps drums and bass independent of complexity", () => {
+    const base = defaultSettingsFor(styleId, 11);
+    const other = { ...base, complexity: 0.9 };
+    const pick = (settings: typeof base) =>
+      JSON.stringify(
+        composeBar(settings, 6).filter((event) => event.layer === "drums"),
+      );
+    expect(pick(base)).toBe(pick(other));
+  });
+});

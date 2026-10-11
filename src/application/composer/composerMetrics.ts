@@ -1,0 +1,17 @@
+export const COMPOSER_METRICS = {
+  beatsPerBar: 4,
+  stepsPerBar: 16,
+  beatsPerStep: 0.25,
+  sectionBars: 8,
+  phraseBars: 4,
+  swingMaxBeats: 1 / 12,
+  humanizeMaxBeats: 0.03,
+  humanizeVelocity: 0.2,
+  energyAnchorBars: 8,
+  energyAmplitude: 0.3,
+  guaranteedHit: 0.95,
+  noteGate: 0.94,
+  strumBeats: 0.012,
+  fillStartStep: 12,
+  voicingHistoryLimit: 8,
+} as const;

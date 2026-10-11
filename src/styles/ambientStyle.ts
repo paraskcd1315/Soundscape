@@ -1,0 +1,83 @@
+import type { StyleDefinition } from "../domain/model/StyleDefinition";
+
+export const ambientStyle: StyleDefinition = {
+  id: "ambient",
+  tempoRange: { min: 50, max: 85 },
+  defaultTempo: 64,
+  swingRange: { min: 0, max: 0 },
+  defaultSwing: 0,
+  humanizeScale: 1.5,
+  defaultReverb: 0.85,
+  defaultBrightness: 0.55,
+  ducking: false,
+  scaleIds: ["dorian", "lydian", "majorPentatonic", "minor"],
+  defaultScaleId: "dorian",
+  progressions: [
+    {
+      barsPerChord: 2,
+      chords: [
+        { degree: 0, size: 4 },
+        { degree: 3, size: 4 },
+        { degree: 5, size: 4 },
+        { degree: 4, size: 4 },
+      ],
+    },
+    {
+      barsPerChord: 4,
+      chords: [
+        { degree: 0, size: 5 },
+        { degree: 5, size: 4 },
+      ],
+    },
+    {
+      barsPerChord: 2,
+      chords: [
+        { degree: 0, size: 4 },
+        { degree: 2, size: 4 },
+        { degree: 3, size: 5 },
+        { degree: 0, size: 4 },
+      ],
+    },
+  ],
+  drums: null,
+  bass: {
+    voice: "subBass",
+    baseMidi: 36,
+    minimumEnergy: 0.1,
+    patterns: [[{ step: 0, interval: "root", lengthSteps: 16, weight: 1 }]],
+  },
+  chords: {
+    voice: "pad",
+    rhythm: "held",
+    centerMidi: 60,
+    simpleSize: 4,
+    richSize: 5,
+    stabSteps: [],
+    arpStepLength: 4,
+    velocity: 0.7,
+  },
+  melody: {
+    voice: "bell",
+    baseMidi: 72,
+    lowMidi: 67,
+    highMidi: 91,
+    restChance: 0.55,
+    minimumNotes: 2,
+    maximumNotes: 4,
+    noteLengthSteps: [8, 12, 16],
+    stepBias: 0.7,
+    minimumEnergy: 0.1,
+  },
+  texture: { kind: "bells", voice: "bell", baseMidi: 84, chance: 0.4 },
+  palette: {
+    backgroundTop: "#04101f",
+    backgroundBottom: "#0b3a46",
+    accents: {
+      drums: "#7fd6e6",
+      bass: "#2f7fa8",
+      chords: "#4fb7c9",
+      melody: "#b8f0ff",
+      texture: "#e5f9ff",
+    },
+  },
+};

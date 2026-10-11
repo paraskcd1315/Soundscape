@@ -1,0 +1,21 @@
+export const SETTINGS_METRICS = {
+  defaultSeed: 20261011,
+  defaultEnergy: 0.55,
+  defaultDensity: 0.5,
+  defaultComplexity: 0.45,
+  defaultVariation: 0.4,
+  defaultHumanize: 0.5,
+  defaultMasterVolume: 0.7,
+  defaultVisualizerIntensity: 0.7,
+  defaultKeyRoot: 0,
+  defaultLayerLevels: {
+    drums: 0.8,
+    bass: 0.8,
+    chords: 0.7,
+    melody: 0.7,
+    texture: 0.5,
+  },
+  keyCount: 12,
+  presetSchemaVersion: 1,
+  presetNameMaxLength: 60,
+} as const;
