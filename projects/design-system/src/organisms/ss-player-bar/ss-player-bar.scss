@@ -43,8 +43,9 @@
   }
 
   @include breakpoints.compact {
-    bottom: calc(var(--ss-safe-bottom) + var(--ss-space-2));
-    padding: 0 var(--ss-space-2);
+    position: static;
+    align-self: stretch;
+    padding: 0;
 
     &__inner {
       grid-template-columns: minmax(0, 1fr) auto auto;

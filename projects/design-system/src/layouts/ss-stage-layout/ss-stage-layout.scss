@@ -25,10 +25,6 @@
     inset: 0;
     z-index: var(--ss-z-chrome);
     pointer-events: none;
-
-    > * {
-      pointer-events: auto;
-    }
   }
 
   @include breakpoints.compact {
@@ -36,5 +32,19 @@
       top: calc(var(--ss-safe-top) + var(--ss-space-4));
       left: calc(var(--ss-safe-left) + var(--ss-space-4));
     }
+
+    &__overlay {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      gap: var(--ss-space-3);
+      padding: 0 calc(var(--ss-safe-right) + var(--ss-space-2)) calc(var(--ss-safe-bottom) + var(--ss-space-2))
+        calc(var(--ss-safe-left) + var(--ss-space-2));
+    }
   }
+}
+
+:where(.ss-stage-layout__overlay > *) {
+  pointer-events: auto;
 }

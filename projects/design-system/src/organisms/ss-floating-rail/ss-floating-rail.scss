@@ -12,9 +12,11 @@
   transform: translateY(-50%);
 
   @include breakpoints.compact {
-    top: auto;
-    bottom: calc(var(--ss-safe-bottom) + var(--ss-rail-compact-offset));
-    right: calc(var(--ss-safe-right) + var(--ss-space-3));
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
     gap: var(--ss-space-2);
     transform: none;
   }
