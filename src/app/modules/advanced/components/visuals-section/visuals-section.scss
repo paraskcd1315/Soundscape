@@ -1,3 +1,9 @@
+.visuals-section__label,
+.visuals-section__swatches,
+.visuals-section__custom {
+  grid-column: 1 / -1;
+}
+
 .visuals-section__label {
   font-size: var(--ss-fs-caption);
   font-weight: 700;
@@ -9,7 +15,8 @@
 .visuals-section__swatches {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--ss-space-2);
+  justify-items: center;
+  gap: var(--ss-space-3) var(--ss-space-2);
 }
 
 .visuals-section__custom {
