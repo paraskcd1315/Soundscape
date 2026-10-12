@@ -13,7 +13,7 @@ export const ambientSpace: SpaceRecipe = {
     pad: 0.3,
     melody: 0.4,
     counter: 0.5,
-    texture: 0.7,
+    texture: 0.35,
   },
   wobbleDepthSeconds: 0.0004,
   wobbleHz: 0.3,

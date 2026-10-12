@@ -5,7 +5,18 @@ import { foldIntoRange } from "../../utils/theory/foldIntoRange";
 import type { BarContext } from "./types/BarContext";
 import { COMPOSER_METRICS } from "./constants/composer.constants";
 import { stepsToBeats, stepToBeat } from "./stepToBeat";
-import { BELL_STEPS, OFFBEAT_STEPS, BELL_LENGTH_BEATS, SWELL_BARS, CRACKLE_MIN, CRACKLE_MAX, ARP_ENERGY_FLOOR, OCTAVE } from "./constants/composeTexture.constants";
+import {
+  BELL_STEPS,
+  BELL_VELOCITY,
+  OFFBEAT_STEPS,
+  BELL_LENGTH_BEATS,
+  SWELL_BARS,
+  SWELL_VELOCITY,
+  CRACKLE_MIN,
+  CRACKLE_MAX,
+  ARP_ENERGY_FLOOR,
+  OCTAVE,
+} from "./constants/composeTexture.constants";
 
 function swellEvent(
   startBeat: number,
@@ -45,13 +56,17 @@ export function composeTexture(context: BarContext): NoteEvent[] {
             recipe.baseMidi,
             recipe.baseMidi + OCTAVE - 1,
           ),
-          velocity: rng.range(0.3, 0.5),
+          velocity: rng.range(BELL_VELOCITY.min, BELL_VELOCITY.max),
         });
       }
     }
     if (context.barIndex % (SWELL_BARS * 2) === 0 && rng.chance(0.5)) {
       events.push(
-        swellEvent(0, SWELL_BARS * COMPOSER_METRICS.beatsPerBar, 0.4),
+        swellEvent(
+          0,
+          SWELL_BARS * COMPOSER_METRICS.beatsPerBar,
+          SWELL_VELOCITY,
+        ),
       );
     }
   }
