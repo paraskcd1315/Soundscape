@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main, task02-mobile-responsive]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
