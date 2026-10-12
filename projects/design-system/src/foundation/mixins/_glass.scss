@@ -1,7 +1,6 @@
 @mixin glass-strong {
   background: var(--ss-glass-strong-bg);
   backdrop-filter: var(--ss-blur-strong);
-  -webkit-backdrop-filter: var(--ss-blur-strong);
   border: 1px solid var(--ss-glass-border);
   box-shadow: var(--ss-shadow-float), inset 0 1px 0 var(--ss-glass-specular);
 }
@@ -19,7 +18,6 @@
     border-radius: inherit;
     background: var(--ss-glass-strong-bg);
     backdrop-filter: var(--ss-blur-strong);
-    -webkit-backdrop-filter: var(--ss-blur-strong);
     box-shadow: inset 0 1px 0 var(--ss-glass-specular);
   }
 }
@@ -27,7 +25,6 @@
 @mixin glass-soft {
   background: var(--ss-glass-bg);
   backdrop-filter: var(--ss-blur-soft);
-  -webkit-backdrop-filter: var(--ss-blur-soft);
   border: 1px solid var(--ss-glass-border);
   box-shadow: var(--ss-shadow-card), inset 0 1px 0 var(--ss-glass-specular);
 }

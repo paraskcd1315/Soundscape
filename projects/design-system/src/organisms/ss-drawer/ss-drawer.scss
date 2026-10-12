@@ -13,7 +13,6 @@
     inset: 0;
     background: var(--ss-scrim);
     backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
     opacity: 0;
     transition: opacity var(--ss-dur-sheet) var(--ss-ease);
   }
@@ -53,7 +52,6 @@
     border-bottom: 1px solid var(--ss-border-subtle);
     background: var(--ss-sheet-header-bg);
     backdrop-filter: var(--ss-sheet-header-blur);
-    -webkit-backdrop-filter: var(--ss-sheet-header-blur);
     touch-action: none;
   }
 

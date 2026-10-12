@@ -46,7 +46,6 @@
     background: var(--ss-glass-bg);
     border-color: var(--ss-border);
     backdrop-filter: var(--ss-blur-soft);
-    -webkit-backdrop-filter: var(--ss-blur-soft);
 
     @include breakpoints.can-hover {
       &:hover:not(:disabled) {
