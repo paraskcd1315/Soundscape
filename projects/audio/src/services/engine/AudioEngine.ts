@@ -323,7 +323,11 @@ export class AudioEngine implements NoteSink {
     decay: number,
   ): ReverbTail {
     const existing = this.reverbTails.get(styleId);
-    if (existing) return existing;
+    if (existing) {
+      this.reverbTails.delete(styleId);
+      this.reverbTails.set(styleId, existing);
+      return existing;
+    }
     const convolver = this.context.createConvolver();
     convolver.buffer = createImpulseResponse(this.context, seconds, decay);
     const tailReturn = this.context.createGain();
@@ -332,9 +336,19 @@ export class AudioEngine implements NoteSink {
       .connect(convolver)
       .connect(tailReturn)
       .connect(this.reverbReturn);
-    const tail = { return: tailReturn };
+    const tail = { convolver, return: tailReturn };
     this.reverbTails.set(styleId, tail);
+    this.retireOldTails();
     return tail;
+  }
+
+  private retireOldTails(): void {
+    for (const [styleId, tail] of this.reverbTails) {
+      if (this.reverbTails.size <= AUDIO_METRICS.maxReverbTails) return;
+      this.reverbBus.disconnect(tail.convolver);
+      tail.return.disconnect();
+      this.reverbTails.delete(styleId);
+    }
   }
 
   private curveFor(drive: number): Float32Array<ArrayBuffer> {

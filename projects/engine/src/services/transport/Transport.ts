@@ -34,6 +34,15 @@ export class Transport {
     this.tick();
   }
 
+  startAtBar(barIndex: number, barTime: number): void {
+    this.queue = [];
+    this.nextBarIndex = barIndex;
+    this.nextBarTime = barTime;
+    this.running = true;
+    this.dependencies.ticker.start(() => this.tick());
+    this.tick();
+  }
+
   pause(): void {
     this.running = false;
     this.dependencies.ticker.stop();

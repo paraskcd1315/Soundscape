@@ -71,4 +71,7 @@ export const AUDIO_METRICS = {
   duckedLayers: ["bass", "chords", "pad", "counter", "texture"],
   analyserFftSize: 2048,
   analyserSmoothing: 0.8,
+  analyserMinDecibels: -100,
+  analyserMaxDecibels: -30,
+  maxReverbTails: 2,
 } as const;

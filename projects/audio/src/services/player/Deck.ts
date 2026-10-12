@@ -3,8 +3,8 @@ import type { EventTimeline } from "@soundscape/engine/services/transport/EventT
 import { Transport } from "@soundscape/engine/services/transport/Transport";
 import { LAYER_KINDS } from "@soundscape/engine/constants/layerKinds.constants";
 import { AudioEngine } from "../engine/AudioEngine";
-import { WorkerTicker } from "../ticker/WorkerTicker";
 import type { DrumSampleBank } from "../samples/DrumSampleBank";
+import type { DeckClock } from "../../types/DeckClock";
 import {
   ALL_OTHER_LAYERS,
   EARLY_EXIT_LAYERS,
@@ -19,13 +19,15 @@ export class Deck {
   private readonly fader: GainNode;
   private frozen: Settings | null = null;
   private disposed = false;
+  private steadyFrom = Infinity;
 
   constructor(
-    private readonly context: AudioContext,
+    private readonly context: BaseAudioContext,
     output: AudioNode,
     timeline: EventTimeline,
     private readonly live: () => Settings,
     drumBank: DrumSampleBank,
+    clock: DeckClock,
   ) {
     this.fader = context.createGain();
     this.fader.gain.value = 0;
@@ -34,16 +36,30 @@ export class Deck {
     this.engine.applySettings(live());
     this.transport = new Transport({
       clock: { now: () => context.currentTime },
-      ticker: new WorkerTicker(),
+      ticker: clock.ticker,
       sink: this.engine,
       timeline,
       settings: () => this.settings(),
-      inBackground: () => document.hidden,
+      inBackground: clock.inBackground,
     });
   }
 
   get nextBarTime(): number {
     return this.transport.nextBarStartTime;
+  }
+
+  get nextBarIndex(): number {
+    return this.transport.currentBar;
+  }
+
+  get isSteady(): boolean {
+    return !this.frozen && this.context.currentTime >= this.steadyFrom;
+  }
+
+  resumeAtBar(barIndex: number, barTime: number): void {
+    this.fader.gain.setValueAtTime(1, 0);
+    this.transport.startAtBar(barIndex, barTime);
+    this.steadyFrom = 0;
   }
 
   settings(): Settings {
@@ -71,6 +87,13 @@ export class Deck {
       start + bar * TRANSITION_METRICS.lateEntryBar,
       bar,
     );
+    this.steadyFrom =
+      start +
+      bar *
+        Math.max(
+          TRANSITION_METRICS.fadeInBars,
+          TRANSITION_METRICS.lateEntryBar + 1,
+        );
   }
 
   outro(): number {
@@ -111,6 +134,7 @@ export class Deck {
     const now = this.context.currentTime;
     this.transport.resume();
     this.rampFader(1, now, now + this.softFadeSeconds());
+    this.steadyFrom = now + this.softFadeSeconds();
   }
 
   private softFadeSeconds(): number {

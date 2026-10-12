@@ -7,14 +7,14 @@ import { Deck } from "./Deck";
 import { DrumSampleBank } from "../samples/DrumSampleBank";
 import { preferPlaybackSession } from "../../utils/preferPlaybackSession.util";
 import type { AudioSessionNavigator } from "../../types/AudioSessionNavigator";
-import type { PlayerOptions } from "../../types/PlayerOptions";
-import { MediaElementOutput } from "../output/MediaElementOutput";
+import type { MusicPlayer } from "../../types/MusicPlayer";
+import { WorkerTicker } from "../ticker/WorkerTicker";
 import {
   MAX_LEAVING_DECKS,
   MILLISECONDS_PER_SECOND,
 } from "./constants/player.constants";
 
-export class Player {
+export class Player implements MusicPlayer {
   readonly timeline = new EventTimeline();
   private context: AudioContext | null = null;
   private bus: GainNode | null = null;
@@ -25,12 +25,8 @@ export class Player {
   private suspendTimer = 0;
   private drumBank: DrumSampleBank | null = null;
   private drumsReady: Promise<void> = Promise.resolve();
-  private output: MediaElementOutput | null = null;
 
-  constructor(
-    private readonly store: SettingsStore,
-    private readonly options: PlayerOptions,
-  ) {
+  constructor(private readonly store: SettingsStore) {
     store.subscribe((next, previous) => this.onSettings(next, previous));
   }
 
@@ -48,9 +44,8 @@ export class Player {
 
   async play(): Promise<void> {
     const context = this.ensureContext();
-    const outputStarted = this.output?.start();
     window.clearTimeout(this.suspendTimer);
-    await Promise.all([context.resume(), this.drumsReady, outputStarted]);
+    await Promise.all([context.resume(), this.drumsReady]);
     if (this.active) return;
     if (this.paused) {
       this.active = this.paused;
@@ -75,7 +70,6 @@ export class Player {
         if (this.active) return;
         deck.halt();
         void context.suspend();
-        this.output?.stop();
       },
       (end - context.currentTime) * MILLISECONDS_PER_SECOND,
     );
@@ -125,6 +119,7 @@ export class Player {
       this.timeline,
       () => this.store.get(),
       this.drumBank as DrumSampleBank,
+      { ticker: new WorkerTicker(), inBackground: () => document.hidden },
     );
   }
 
@@ -137,9 +132,7 @@ export class Player {
     analyser.fftSize = AUDIO_METRICS.analyserFftSize;
     analyser.smoothingTimeConstant = AUDIO_METRICS.analyserSmoothing;
     bus.connect(analyser);
-    if (this.options.mediaElementOutput)
-      this.output = new MediaElementOutput(context, bus);
-    else bus.connect(context.destination);
+    bus.connect(context.destination);
     this.context = context;
     this.bus = bus;
     this.analyserNode = analyser;
