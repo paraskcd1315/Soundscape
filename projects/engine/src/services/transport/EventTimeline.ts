@@ -30,4 +30,8 @@ export class EventTimeline {
   clear(): void {
     this.items = [];
   }
+
+  dropFrom(time: number): void {
+    this.items = this.items.filter((item) => item.time < time);
+  }
 }

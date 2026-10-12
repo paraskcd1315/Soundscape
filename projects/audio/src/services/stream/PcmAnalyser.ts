@@ -31,6 +31,11 @@ export class PcmAnalyser implements SpectrumSource {
       this.history.shift();
   }
 
+  dropFrom(time: number): void {
+    const kept = this.history.filter((batch) => batch.time < time);
+    this.history.splice(0, this.history.length, ...kept);
+  }
+
   hasData(): boolean {
     return this.fill(this.clock());
   }

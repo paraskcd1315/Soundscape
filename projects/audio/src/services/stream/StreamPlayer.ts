@@ -13,7 +13,10 @@ import { OffsetTimeline } from "./OffsetTimeline";
 import { PcmAnalyser } from "./PcmAnalyser";
 import { StreamSegment } from "./StreamSegment";
 import { STREAM_METRICS } from "./constants/stream.constants";
+import { barBefore } from "./utils/barBefore.util";
+import { changesMusic } from "./utils/changesMusic.util";
 import { crossfadeBatches } from "./utils/crossfadeBatches.util";
+import { wait } from "./utils/wait.util";
 
 export class StreamPlayer implements MusicPlayer {
   readonly timeline = new EventTimeline();
@@ -28,13 +31,14 @@ export class StreamPlayer implements MusicPlayer {
   private active: Deck | null = null;
   private playing = false;
   private pumping = false;
+  private flushing = false;
   private fadeTimer = 0;
   private fadeLevel = 0;
 
   constructor(private readonly store: SettingsStore) {
     store.subscribe((next, previous) => this.onSettings(next, previous));
     this.sink.element.addEventListener("timeupdate", () => void this.pump());
-    document.addEventListener("visibilitychange", () => void this.pump());
+    document.addEventListener("visibilitychange", () => this.onVisibility());
     window.setInterval(() => void this.pump(), STREAM_METRICS.pumpMilliseconds);
   }
 
@@ -100,7 +104,7 @@ export class StreamPlayer implements MusicPlayer {
     return { ...this.store.get(), masterVolume: 1 };
   }
 
-  private createDeck(): Deck {
+  private createDeck(live: () => Settings = () => this.liveSettings()): Deck {
     const segment = this.segment as StreamSegment;
     const ticker = new ManualTicker();
     this.tickers.push(ticker);
@@ -108,16 +112,33 @@ export class StreamPlayer implements MusicPlayer {
       segment.context,
       segment.bus,
       this.segmentTimeline as OffsetTimeline,
-      () => this.liveSettings(),
+      live,
       this.drumBank as DrumSampleBank,
       { ticker, inBackground: () => true },
     );
   }
 
+  private onVisibility(): void {
+    if (
+      !document.hidden &&
+      this.sink.aheadSeconds > STREAM_METRICS.flushAheadSeconds
+    )
+      void this.flush(null);
+    else void this.pump();
+  }
+
   private onSettings(next: Settings, previous: Settings): void {
     this.applyVolume();
-    const deck = this.active;
-    if (!deck) return;
+    if (!this.active || this.flushing || !changesMusic(previous, next)) return;
+    if (this.sink.aheadSeconds > STREAM_METRICS.flushAheadSeconds) {
+      void this.flush(previous);
+      return;
+    }
+    this.follow(previous, next);
+  }
+
+  private follow(previous: Settings, next: Settings): void {
+    const deck = this.active as Deck;
     if (!isIdentityChange(previous, next)) {
       deck.applySettings(this.liveSettings());
       return;
@@ -126,6 +147,56 @@ export class StreamPlayer implements MusicPlayer {
     this.retire(deck);
     this.active = this.createDeck();
     this.active.introAt(startTime);
+  }
+
+  private async flush(previous: Settings | null): Promise<void> {
+    const old = this.segment;
+    const oldDeck = this.active;
+    if (this.flushing || !old || !oldDeck) return;
+    this.flushing = true;
+    try {
+      while (this.pumping) await wait(STREAM_METRICS.flushPollMilliseconds);
+      const batchSeconds =
+        STREAM_METRICS.batchFrames / STREAM_METRICS.sampleRate;
+      const cut =
+        Math.ceil(
+          (this.currentTime() + STREAM_METRICS.flushLeadSeconds) / batchSeconds,
+        ) * batchSeconds;
+      const resumed = previous ?? this.store.get();
+      const next = await StreamSegment.create(
+        cut - STREAM_METRICS.prerollBatches * batchSeconds,
+        STREAM_METRICS.segmentSeconds,
+      );
+      next.onPcm = () => undefined;
+      const tempo = oldDeck.settings().tempo;
+      const timeline = this.adopt(next);
+      next.onPcm = () => undefined;
+      this.timeline.dropFrom(cut);
+      this.spectrum.dropFrom(cut);
+      timeline.acceptFrom(cut);
+      const position = barBefore(
+        oldDeck.nextBarIndex,
+        old.startTime + oldDeck.nextBarTime,
+        barSeconds(tempo),
+        next.startTime,
+      );
+      oldDeck.dispose();
+      this.leaving.forEach((_end, deck) => deck.dispose());
+      this.leaving.clear();
+      old.finish();
+      this.active = this.createDeck(() => ({ ...resumed, masterVolume: 1 }));
+      this.active.resumeAtBar(
+        position.barIndex,
+        position.barTime - next.startTime,
+      );
+      while (next.renderedTime < cut) await this.renderStep(next, cut);
+      await this.sink.restartAt(cut);
+      next.onPcm = (time, channels) => this.emit(time, channels);
+      this.follow(resumed, this.store.get());
+    } finally {
+      this.flushing = false;
+    }
+    void this.pump();
   }
 
   private retire(deck: Deck): void {
@@ -138,7 +209,7 @@ export class StreamPlayer implements MusicPlayer {
   }
 
   private async pump(): Promise<void> {
-    if (this.pumping || !this.segment) return;
+    if (this.pumping || this.flushing || !this.segment) return;
     this.pumping = true;
     try {
       while (
@@ -153,7 +224,10 @@ export class StreamPlayer implements MusicPlayer {
     }
   }
 
-  private async renderStep(segment: StreamSegment): Promise<void> {
+  private async renderStep(
+    segment: StreamSegment,
+    until = Infinity,
+  ): Promise<void> {
     this.tickers.forEach((ticker) => ticker.tick());
     const now = segment.context.currentTime;
     this.leaving.forEach((end, deck) => {
@@ -161,10 +235,11 @@ export class StreamPlayer implements MusicPlayer {
       deck.dispose();
       this.leaving.delete(deck);
     });
-    const step = document.hidden
-      ? STREAM_METRICS.hiddenStepSeconds
-      : STREAM_METRICS.visibleStepSeconds;
-    await segment.renderTo(segment.renderedTime + step);
+    const step =
+      document.hidden || until !== Infinity
+        ? STREAM_METRICS.hiddenStepSeconds
+        : STREAM_METRICS.visibleStepSeconds;
+    await segment.renderTo(Math.min(segment.renderedTime + step, until));
   }
 
   private depthSeconds(): number {
@@ -222,16 +297,17 @@ export class StreamPlayer implements MusicPlayer {
       if (time >= cut - 1e-9) incoming.push(channels);
     };
     if (oldDeck) {
-      const settings = oldDeck.settings();
-      const bar = barSeconds(settings.tempo);
-      let barIndex = oldDeck.nextBarIndex;
-      let barTime = old.startTime + oldDeck.nextBarTime;
-      while (barTime > next.startTime && barIndex > 0) {
-        barIndex--;
-        barTime -= bar;
-      }
+      const position = barBefore(
+        oldDeck.nextBarIndex,
+        old.startTime + oldDeck.nextBarTime,
+        barSeconds(oldDeck.settings().tempo),
+        next.startTime,
+      );
       this.active = this.createDeck();
-      this.active.resumeAtBar(barIndex, barTime - next.startTime);
+      this.active.resumeAtBar(
+        position.barIndex,
+        position.barTime - next.startTime,
+      );
     }
     while (next.renderedTime < fadeEnd) await this.renderStep(next);
 

@@ -3,6 +3,7 @@ import {
   STREAM_METRICS,
   STREAM_MIME,
 } from "./constants/stream.constants";
+import { idle } from "./utils/idle.util";
 import { joinBytes } from "./utils/joinBytes.util";
 
 export class AacSink {
@@ -13,6 +14,7 @@ export class AacSink {
   private buffer: SourceBuffer | null = null;
   private framesEncoded = 0;
   private lastPrune = 0;
+  private restarting = false;
 
   constructor() {
     this.element = new Audio();
@@ -33,6 +35,34 @@ export class AacSink {
       typeof MediaSource !== "undefined" &&
       MediaSource.isTypeSupported(STREAM_MIME)
     );
+  }
+
+  get aheadSeconds(): number {
+    const buffered = this.buffer?.buffered;
+    if (!buffered || buffered.length === 0) return 0;
+    return buffered.end(buffered.length - 1) - this.element.currentTime;
+  }
+
+  async restartAt(time: number): Promise<void> {
+    this.restarting = true;
+    this.encoder.reset();
+    this.encoder.configure(STREAM_ENCODER);
+    this.pending.length = 0;
+    this.framesEncoded = Math.round(time * STREAM_METRICS.sampleRate);
+    const buffer = this.buffer;
+    if (buffer) {
+      await idle(buffer);
+      const end = buffer.buffered.length
+        ? buffer.buffered.end(buffer.buffered.length - 1)
+        : 0;
+      if (end > time) {
+        buffer.remove(time, end);
+        await idle(buffer);
+      }
+      buffer.timestampOffset = time;
+    }
+    this.restarting = false;
+    this.drain();
   }
 
   write(channels: Float32Array[]): void {
@@ -76,7 +106,7 @@ export class AacSink {
 
   private drain(): void {
     const buffer = this.buffer;
-    if (!buffer || buffer.updating) return;
+    if (!buffer || buffer.updating || this.restarting) return;
     if (this.prune(buffer)) return;
     if (this.pending.length === 0) return;
     buffer.appendBuffer(joinBytes(this.pending.splice(0)));
