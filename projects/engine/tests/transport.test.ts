@@ -19,6 +19,7 @@ describe("Transport", () => {
       },
       timeline: new EventTimeline(),
       settings: () => settings,
+      inBackground: () => false,
     });
 
     transport.start();

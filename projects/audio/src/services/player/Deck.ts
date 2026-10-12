@@ -38,6 +38,7 @@ export class Deck {
       sink: this.engine,
       timeline,
       settings: () => this.settings(),
+      inBackground: () => document.hidden,
     });
   }
 

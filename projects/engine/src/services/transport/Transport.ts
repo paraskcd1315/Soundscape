@@ -55,9 +55,15 @@ export class Transport {
 
   tick(): void {
     const now = this.dependencies.clock.now();
-    while (this.nextBarTime - now < TRANSPORT_METRICS.barLeadSeconds)
-      this.composeNextBar();
-    const horizon = now + TRANSPORT_METRICS.lookaheadSeconds;
+    const background = this.dependencies.inBackground();
+    const barLead = background
+      ? TRANSPORT_METRICS.backgroundBarLeadSeconds
+      : TRANSPORT_METRICS.barLeadSeconds;
+    const lookahead = background
+      ? TRANSPORT_METRICS.backgroundLookaheadSeconds
+      : TRANSPORT_METRICS.lookaheadSeconds;
+    while (this.nextBarTime - now < barLead) this.composeNextBar();
+    const horizon = now + lookahead;
     while (
       this.queue.length > 0 &&
       (this.queue[0] as PendingNote).startTime < horizon

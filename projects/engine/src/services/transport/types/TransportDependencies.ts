@@ -10,4 +10,5 @@ export interface TransportDependencies {
   sink: NoteSink;
   timeline: EventTimeline;
   settings: () => Settings;
+  inBackground: () => boolean;
 }

@@ -30,6 +30,7 @@ describe("transitions", () => {
       sink: { schedule: () => undefined },
       timeline,
       settings: () => settings,
+      inBackground: () => false,
     });
     transport.start(5);
     expect(transport.currentBar).toBe(0);
