@@ -64,6 +64,9 @@
   --ss-control-height-sm: 36px;
   --ss-touch-input-font-size: 16px;
   --ss-sheet-max-width: 640px;
+  --ss-sheet-max-height: calc(100dvh - var(--ss-safe-top) - var(--ss-space-2));
+  --ss-sheet-header-bg: color-mix(in srgb, var(--ss-surface-container-high) 30%, transparent);
+  --ss-sheet-header-blur: blur(10px) saturate(1.4);
   --ss-safe-top: env(safe-area-inset-top, 0px);
   --ss-safe-bottom: env(safe-area-inset-bottom, 0px);
   --ss-safe-right: env(safe-area-inset-right, 0px);

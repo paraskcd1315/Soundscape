@@ -1,5 +1,7 @@
 import "./ss-drawer.scss";
 import { SsIconButton } from "../../atoms/ss-icon-button/SsIconButton";
+import { SheetDrag } from "../../foundation/behaviours/SheetDrag";
+import { COMPACT_MEDIA_QUERY } from "../../foundation/constants/breakpoints.constants";
 import { createElement } from "../../foundation/utils/createElement.util";
 import type { SsDrawerOptions } from "./types/SsDrawerOptions";
 
@@ -27,6 +29,13 @@ export class SsDrawer {
       close.element,
     );
     this.body = createElement("div", "ss-drawer__body");
+    const scroller = createElement(
+      "div",
+      "ss-drawer__scroll",
+      {},
+      header,
+      this.body,
+    );
     this.panel = createElement(
       "aside",
       "ss-drawer__panel",
@@ -36,9 +45,15 @@ export class SsDrawer {
         "aria-label": options.title,
         tabindex: "-1",
       },
-      header,
-      this.body,
+      scroller,
     );
+    new SheetDrag({
+      panel: this.panel,
+      handle: header,
+      scroller,
+      enabled: () => window.matchMedia(COMPACT_MEDIA_QUERY).matches,
+      onDismiss: () => this.close(),
+    });
     this.element = createElement(
       "div",
       "ss-drawer",

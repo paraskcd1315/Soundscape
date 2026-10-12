@@ -1,4 +1,5 @@
 import "./ss-menu.scss";
+import { SheetDrag } from "../../foundation/behaviours/SheetDrag";
 import { COMPACT_MEDIA_QUERY } from "../../foundation/constants/breakpoints.constants";
 import { createElement } from "../../foundation/utils/createElement.util";
 import type { SsMenuOptions } from "./types/SsMenuOptions";
@@ -52,14 +53,29 @@ export class SsMenu {
         list.append(item);
       }
     }
+    const header = createElement(
+      "div",
+      "ss-menu__header",
+      { "aria-hidden": "true" },
+      createElement("span", "ss-menu__grip"),
+      createElement("span", "ss-menu__title", {}, options.label),
+    );
+    const scroller = createElement("div", "ss-menu__scroll", {}, header, list);
     this.element = createElement(
       "div",
       "ss-menu",
       { "aria-hidden": "true" },
-      list,
+      scroller,
     );
     this.element.addEventListener("keydown", (event) => {
       if (event.key === "Escape") this.close();
+    });
+    new SheetDrag({
+      panel: this.element,
+      handle: header,
+      scroller,
+      enabled: () => this.element.classList.contains("ss-menu--sheet"),
+      onDismiss: () => this.close(),
     });
     this.set(options.value);
   }
@@ -91,9 +107,11 @@ export class SsMenu {
     else this.placeBeside(anchor);
     document.addEventListener("pointerdown", this.dismiss);
     window.addEventListener("resize", this.closeOnResize);
-    this.element
-      .querySelector<HTMLButtonElement>('[aria-checked="true"]')
-      ?.focus();
+    const checked = this.element.querySelector<HTMLButtonElement>(
+      '[aria-checked="true"]',
+    );
+    checked?.focus({ preventScroll: true });
+    checked?.scrollIntoView({ block: "center" });
   }
 
   close(): void {
