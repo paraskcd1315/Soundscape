@@ -1,6 +1,7 @@
 import { Player } from "@soundscape/audio/services/player/Player";
 import type { SettingsStore } from "@soundscape/engine/services/settings/SettingsStore";
 import type { VisualizerSource } from "@soundscape/visualizer/types/VisualizerSource";
+import { TOUCH_MEDIA_QUERY } from "../../constants/app.constants";
 import { APP_STRINGS } from "../../constants/app.strings";
 import { NotifyService } from "../notify/NotifyService";
 import type { ToastService } from "../toast/ToastService";
@@ -13,7 +14,9 @@ export class PlaybackService extends NotifyService {
     private readonly toasts: ToastService,
   ) {
     super();
-    this.player = new Player(store);
+    this.player = new Player(store, {
+      mediaElementOutput: window.matchMedia(TOUCH_MEDIA_QUERY).matches,
+    });
   }
 
   get isPlaying(): boolean {

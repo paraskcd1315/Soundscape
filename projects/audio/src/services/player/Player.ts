@@ -7,6 +7,8 @@ import { Deck } from "./Deck";
 import { DrumSampleBank } from "../samples/DrumSampleBank";
 import { preferPlaybackSession } from "../../utils/preferPlaybackSession.util";
 import type { AudioSessionNavigator } from "../../types/AudioSessionNavigator";
+import type { PlayerOptions } from "../../types/PlayerOptions";
+import { MediaElementOutput } from "../output/MediaElementOutput";
 import {
   MAX_LEAVING_DECKS,
   MILLISECONDS_PER_SECOND,
@@ -23,8 +25,12 @@ export class Player {
   private suspendTimer = 0;
   private drumBank: DrumSampleBank | null = null;
   private drumsReady: Promise<void> = Promise.resolve();
+  private output: MediaElementOutput | null = null;
 
-  constructor(private readonly store: SettingsStore) {
+  constructor(
+    private readonly store: SettingsStore,
+    private readonly options: PlayerOptions,
+  ) {
     store.subscribe((next, previous) => this.onSettings(next, previous));
   }
 
@@ -42,8 +48,9 @@ export class Player {
 
   async play(): Promise<void> {
     const context = this.ensureContext();
+    const outputStarted = this.output?.start();
     window.clearTimeout(this.suspendTimer);
-    await Promise.all([context.resume(), this.drumsReady]);
+    await Promise.all([context.resume(), this.drumsReady, outputStarted]);
     if (this.active) return;
     if (this.paused) {
       this.active = this.paused;
@@ -68,6 +75,7 @@ export class Player {
         if (this.active) return;
         deck.halt();
         void context.suspend();
+        this.output?.stop();
       },
       (end - context.currentTime) * MILLISECONDS_PER_SECOND,
     );
@@ -128,8 +136,10 @@ export class Player {
     const analyser = context.createAnalyser();
     analyser.fftSize = AUDIO_METRICS.analyserFftSize;
     analyser.smoothingTimeConstant = AUDIO_METRICS.analyserSmoothing;
-    bus.connect(context.destination);
     bus.connect(analyser);
+    if (this.options.mediaElementOutput)
+      this.output = new MediaElementOutput(context, bus);
+    else bus.connect(context.destination);
     this.context = context;
     this.bus = bus;
     this.analyserNode = analyser;

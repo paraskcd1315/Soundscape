@@ -9,4 +9,6 @@ export const APP_CONSTANTS = {
   fallbackStyle: "lofi",
 } as const;
 
+export const TOUCH_MEDIA_QUERY = "(pointer: coarse)";
+
 export const SEED_TEXT_PATTERN = /^[0-9a-z]{1,7}$/;

@@ -11,6 +11,7 @@ import { SafeStorage } from "./core/services/storage/SafeStorage";
 import { ToastService } from "./core/services/toast/ToastService";
 import { AdvancedDrawer } from "./modules/advanced/components/advanced-drawer/AdvancedDrawer";
 import { PlayerFooter } from "./modules/player/components/player-footer/PlayerFooter";
+import { MediaSessionService } from "./modules/player/services/MediaSessionService";
 import { ActionRail } from "./modules/rail/components/action-rail/ActionRail";
 import { StageView } from "./modules/stage/components/stage-view/StageView";
 
@@ -52,6 +53,7 @@ export class App {
       toggleAdvanced: () => advanced.toggle(),
       stepPreset: (direction) => presets.step(direction),
     }).bind();
+    new MediaSessionService(store, playback, presets).bind();
 
     stage.start();
     if (initial.fromShare) toasts.show(APP_STRINGS.toastSharedLoaded);

@@ -6,14 +6,13 @@ import { SsPlayerBar } from "@soundscape/design-system/organisms/ss-player-bar/S
 import type { SettingsStore } from "@soundscape/engine/services/settings/SettingsStore";
 import type { PlaybackService } from "../../../../core/services/playback/PlaybackService";
 import type { PresetLibraryService } from "../../../../core/services/presets/PresetLibraryService";
-import { seedToText } from "../../../../core/utils/seedText.util";
 import {
   formatNowPlayingDetail,
   formatPercent,
-  formatText,
 } from "../../../../shared/utils/format.util";
 import { PLAYER_STRINGS } from "../../constants/player.strings";
 import { UNMUTE_FALLBACK_VOLUME } from "../../constants/player.constants";
+import { nowPlayingTitle } from "../../utils/nowPlayingTitle.util";
 
 export class PlayerFooter {
   readonly element: HTMLElement;
@@ -120,10 +119,10 @@ export class PlayerFooter {
     );
     this.volume.set(settings.masterVolume);
     this.volumeButton.setIcon(settings.masterVolume > 0 ? "volume" : "mute");
-    const preset = this.presets.selectedPreset;
-    this.titleText.textContent =
-      preset?.name ??
-      `${PLAYER_STRINGS.nowPlayingCustom} · ${formatText(PLAYER_STRINGS.seedTag, seedToText(settings.seed))}`;
+    this.titleText.textContent = nowPlayingTitle(
+      settings,
+      this.presets.selectedPreset?.name,
+    );
     this.detailText.textContent = formatNowPlayingDetail(settings);
   }
 }

@@ -7,4 +7,5 @@ export const PLAYER_STRINGS = {
   nowPlayingCustom: "Your mix",
   nowPlayingEyebrow: "Now playing",
   seedTag: "Seed {0}",
+  mediaArtist: "Soundscape",
 } as const;
