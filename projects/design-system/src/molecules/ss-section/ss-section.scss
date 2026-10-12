@@ -20,5 +20,9 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: var(--ss-space-4);
+
+    > :last-child:nth-child(odd) {
+      grid-column: 1 / -1;
+    }
   }
 }

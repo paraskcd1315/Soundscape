@@ -9,7 +9,9 @@
 }
 
 .presets-section__actions {
+  grid-column: 1 / -1;
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-between;
   gap: var(--ss-space-2);
 }
